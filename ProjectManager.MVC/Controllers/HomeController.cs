@@ -27,6 +27,14 @@
             return this.View();
         }
 
+        [HttpPost]
+        public IActionResult Actions(ActionViewModel actionViewModel)
+        {
+            this.ViewBag.Success = $"Added action {actionViewModel.Description}";
+
+            return this.View();
+        }
+
         public IActionResult Decisions()
         {
             return this.View();
