@@ -35,7 +35,7 @@ namespace ProjectManager.MVC
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler("/Project/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
@@ -50,7 +50,7 @@ namespace ProjectManager.MVC
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Projects}/{id?}");
+                    pattern: "{controller=Project}/{action=Projects}/{id?}");
             });
         }
     }
