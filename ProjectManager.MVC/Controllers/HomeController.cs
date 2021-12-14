@@ -1,31 +1,45 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using ProjectManager.MVC.Models;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace ProjectManager.MVC.Controllers
+﻿namespace ProjectManager.MVC.Controllers
 {
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.Extensions.Logging;
+
+    using ProjectManager.MVC.Models;
+
+    using System;
+    using System.Diagnostics;
+
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly ILogger<HomeController> logger;
 
         public HomeController(ILogger<HomeController> logger)
         {
-            _logger = logger;
+            logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public IActionResult Index()
+        public IActionResult Projects()
         {
-            return View();
+            return this.View();
         }
 
-        public IActionResult Privacy()
+        public IActionResult Actions()
         {
-            return View();
+            return this.View();
+        }
+
+        public IActionResult Decisions()
+        {
+            return this.View();
+        }
+
+        public IActionResult Risks()
+        {
+            return this.View();
+        }
+
+        public IActionResult Assumptions()
+        {
+            return this.View();
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
