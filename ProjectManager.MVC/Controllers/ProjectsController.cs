@@ -1,10 +1,9 @@
 ﻿namespace ProjectManager.MVC.Controllers
 {
+    using System;
+
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
-
-    using System;
-    using System.Threading.Tasks;
 
     /// <summary>
     ///     Handles requests for the projects page.
@@ -31,9 +30,9 @@
         /// </summary>
         /// <returns>An <see cref="IActionResult"/> representing the projects page.</returns>
         [HttpGet]
-        public async Task<IActionResult> Projects()
+        public IActionResult Projects()
         {
-            return await Task.FromResult(this.View());
-        }        
+            return this.View();
+        }
     }
 }

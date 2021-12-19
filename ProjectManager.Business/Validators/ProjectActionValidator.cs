@@ -1,10 +1,11 @@
 ﻿namespace ProjectManager.Business.Validators
 {
-    using FluentValidation;
-    using System.Text.RegularExpressions;
     using System;
+    using System.Text.RegularExpressions;
 
-    using ProjectAction = Models.ProjectAction;
+    using FluentValidation;
+
+    using ProjectManager.Business.Models;
 
     /// <summary>
     ///     The validator for the project action.

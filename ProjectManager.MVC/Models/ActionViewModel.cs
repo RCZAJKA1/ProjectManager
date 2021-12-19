@@ -6,7 +6,7 @@
     using ProjectManager.Business.Enums;
 
     /// <summary>
-    ///     Represents a project's action view model.
+    ///     Represents the action view model.
     /// </summary>
     [ExcludeFromCodeCoverage]
     public sealed class ActionViewModel

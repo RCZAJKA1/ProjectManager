@@ -1,8 +1,9 @@
 namespace ProjectManager.MVC
 {
+    using System.Threading.Tasks;
+
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.Extensions.Hosting;
-    using System.Threading.Tasks;
 
     /// <summary>
     ///     The program class definition.
@@ -23,11 +24,13 @@ namespace ProjectManager.MVC
         /// </summary>
         /// <param name="args">The application arguments.</param>
         /// <returns>An <see cref="IHostBuilder"/>.</returns>
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
+        public static IHostBuilder CreateHostBuilder(string[] args)
+        {
+            return Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
                 });
+        }
     }
 }

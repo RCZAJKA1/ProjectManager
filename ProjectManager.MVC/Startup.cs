@@ -9,14 +9,15 @@ namespace ProjectManager.MVC
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
+
     using ProjectManager.Business.Models;
     using ProjectManager.Business.Services;
     using ProjectManager.Business.Validators;
-using ProjectManager.Data.Repositories;
+    using ProjectManager.Data.Repositories;
 
-/// <summary>
-///     The application startup that handles web configuration and dependency injection.
-/// </summary>
+    /// <summary>
+    ///     The application startup that handles web configuration and dependency injection.
+    /// </summary>
     public class Startup
     {
         /// <summary>

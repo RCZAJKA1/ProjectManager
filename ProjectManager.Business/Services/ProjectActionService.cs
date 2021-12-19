@@ -1,14 +1,16 @@
 ﻿namespace ProjectManager.Business.Services
 {
-    using FluentValidation;
-    using System.Threading.Tasks;
     using System;
-    using FluentValidation.Results;
     using System.Diagnostics;
-
-    using ProjectAction = Models.ProjectAction;
     using System.Threading;
+    using System.Threading.Tasks;
+
+    using FluentValidation;
+    using FluentValidation.Results;
+
     using Microsoft.Extensions.Logging;
+
+    using ProjectManager.Business.Models;
     using ProjectManager.Data.Repositories;
 
     /// <inheritdoc cref="IProjectActionService">

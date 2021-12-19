@@ -2,9 +2,7 @@
 {
     using System;
     using System.Diagnostics;
-    using System.Threading.Tasks;
 
-    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
 
@@ -34,11 +32,10 @@
         ///     Displays the home page.
         /// </summary>
         /// <returns>An <see cref="IActionResult"/> representing the home page.</returns>
-        [AllowAnonymous]
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            return await Task.FromResult(this.View());
+            return this.View();
         }
 
         /// <summary>
@@ -47,14 +44,14 @@
         /// <returns>An <see cref="IActionResult"/> representing the error page.</returns>
         [HttpGet]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public async Task<IActionResult> Error()
+        public IActionResult Error()
         {
             ErrorViewModel errorViewModel = new ErrorViewModel
-            { 
+            {
                 RequestId = Activity.Current?.Id ?? this.HttpContext.TraceIdentifier
             };
 
-            return await Task.FromResult(this.View(errorViewModel));
+            return this.View(errorViewModel);
         }
     }
 }

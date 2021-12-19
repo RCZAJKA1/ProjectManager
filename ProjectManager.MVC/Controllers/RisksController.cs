@@ -1,7 +1,6 @@
 ﻿namespace ProjectManager.MVC.Controllers
 {
     using System;
-    using System.Threading.Tasks;
 
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
@@ -31,9 +30,9 @@
         /// </summary>
         /// <returns>An <see cref="IActionResult"/> representing the risks page.</returns>
         [HttpGet]
-        public async Task<IActionResult> Risks()
+        public IActionResult Risks()
         {
-            return await Task.FromResult(this.View());
+            return this.View();
         }
     }
 }
