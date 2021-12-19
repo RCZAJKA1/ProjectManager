@@ -1,5 +1,7 @@
 namespace ProjectManager.MVC
 {
+    using System;
+
     using FluentValidation;
 
     using Microsoft.AspNetCore.Builder;
@@ -7,28 +9,48 @@ namespace ProjectManager.MVC
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
-    using ProjectManager.MVC.Models;
-    using ProjectManager.MVC.Services;
-    using ProjectManager.MVC.Validators;
+    using ProjectManager.Business.Models;
+    using ProjectManager.Business.Services;
+    using ProjectManager.Business.Validators;
+using ProjectManager.Data.Repositories;
 
+/// <summary>
+///     The application startup that handles web configuration and dependency injection.
+/// </summary>
     public class Startup
     {
+        /// <summary>
+        ///     Creates a new instance of the <see cref="Startup"/> class.
+        /// </summary>
+        /// <param name="configuration"></param>
+        /// <exception cref="ArgumentNullException"></exception>
         public Startup(IConfiguration configuration)
         {
-            Configuration = configuration;
+            this.Configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         }
 
+        /// <summary>
+        ///     Gets the configuration.
+        /// </summary>
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
+        /// <summary>
+        ///     This method gets called by the runtime. Use this method to add services to the container.
+        /// </summary>
+        /// <param name="services">The services collection.</param>
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
-            services.AddScoped<IActionsService, ActionsService>();
-            services.AddScoped<IValidator<ActionViewModel>, ActionModelValidator>();
+            services.AddTransient<IProjectActionService, ProjectActionService>();
+            services.AddTransient<IValidator<ProjectAction>, ProjectActionValidator>();
+            services.AddTransient<IProjectActionRepository, ProjectActionRepository>();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        /// <summary>
+        ///     This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        /// </summary>
+        /// <param name="app">The application builder.</param>
+        /// <param name="env">The web host environment.</param>
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())

@@ -1,17 +1,19 @@
 ﻿namespace ProjectManager.MVC.Controllers
 {
     using System;
+    using System.Threading;
     using System.Threading.Tasks;
 
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
 
+    using ProjectManager.Business.Models;
+    using ProjectManager.Business.Services;
     using ProjectManager.MVC.Models;
-    using ProjectManager.MVC.Services;
 
-/// <summary>
-///     Handles requests for the projects page.
-/// </summary>
+    /// <summary>
+    ///     Handles requests for the projects page.
+    /// </summary>
     public sealed class ActionsController : Controller
     {
         /// <summary>
@@ -19,10 +21,12 @@
         /// </summary>
         /// <param name="logger">The logger.</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public ActionsController(ILogger<ActionsController> logger, IActionsService actionsService)
+        public ActionsController(ILogger<ActionsController> logger, IProjectActionService actionsService)
         {
             this.Logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.ActionsService = actionsService ?? throw new ArgumentNullException(nameof(actionsService));
+
+            this.CancellationTokenSource = new CancellationTokenSource();
         }
 
         /// <summary>
@@ -33,16 +37,21 @@
         /// <summary>
         ///     Gets the actions service.
         /// </summary>
-        internal IActionsService ActionsService { get; }
+        internal IProjectActionService ActionsService { get; }
+
+        /// <summary>
+        ///     Gets the cancellation token source.
+        /// </summary>
+        private CancellationTokenSource CancellationTokenSource { get; }
 
         /// <summary>
         ///     Redirects to the actions page.
         /// </summary>
         /// <returns>An <see cref="IActionResult"/> representing the actions page.</returns>
         [HttpGet]
-        public async Task<IActionResult> Actions()
+        public IActionResult Actions()
         {
-            return await Task.FromResult(this.View());
+            return this.View();
         }
 
         /// <summary>
@@ -61,14 +70,26 @@
             {
                 this.Logger.LogInformation("The model state is invalid. Redirecting back to Actions.");
 
-                return await Task.FromResult(this.RedirectToAction("Actions"));
+                return this.RedirectToAction("Actions");
             }
 
-            await this.ActionsService.SaveActionAsync(actionViewModel).ConfigureAwait(false);
+            ProjectAction action = new ProjectAction
+            {
+                DateOpened = actionViewModel.DateOpened,
+                DateClosed = actionViewModel.DateClosed,
+                DateDue = actionViewModel.DateDue,
+                Owner = actionViewModel.Owner,
+                Description = actionViewModel.Description,
+                Priority = actionViewModel.Priority,
+                Resolution = actionViewModel.Resolution,
+                Status = actionViewModel.Status
+            };
 
-            this.ViewBag.Success = this.ModelState.IsValid ? $"Added action {actionViewModel.Description}" : $"{string.Join(',', this.ModelState.Values)}";
+            await this.ActionsService.AddProjectActionAsync(action, this.CancellationTokenSource.Token).ConfigureAwait(false);
 
-            return await Task.FromResult(this.View());
+            this.ViewBag.Success = $"Added action {actionViewModel.Description}";
+
+            return this.View();
         }
     }
 }

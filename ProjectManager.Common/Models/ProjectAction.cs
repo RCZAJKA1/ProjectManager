@@ -1,4 +1,4 @@
-﻿namespace ProjectManager.MVC.Models
+﻿namespace ProjectManager.Business.Models
 {
     using System;
     using System.Diagnostics.CodeAnalysis;
@@ -6,15 +6,17 @@
     using ProjectManager.Business.Enums;
 
     /// <summary>
-    ///     Represents a project's action view model.
+    ///     Represents a project action.
     /// </summary>
     [ExcludeFromCodeCoverage]
-    public sealed class ActionViewModel
+    public sealed class ProjectAction
     {
         /// <summary>
         ///     Gets or sets the identifier.
         /// </summary>
         public int? Id { get; set; }
+
+        //TODO: add project id
 
         /// <summary>
         ///     Gets or sets the opened date.
