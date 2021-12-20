@@ -53,13 +53,15 @@
                 throw new ArgumentNullException(nameof(projectAction));
             }
 
-            ValidationResult result = await this.Validator.ValidateAsync(projectAction);
+            // TODO: convert date time timezones
+
+            ValidationResult result = await this.Validator.ValidateAsync(projectAction, cancellationToken).ConfigureAwait(false);
             if (!result.IsValid)
             {
                 throw new ValidationException(result.Errors);
             }
 
-            //await this.Repository.SaveActionAsync(projectAction, cancellationToken);
+            await this.Repository.SaveActionAsync(projectAction, cancellationToken);
 
             Debug.WriteLine("Finished saving the action.");
         }

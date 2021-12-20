@@ -1,7 +1,6 @@
 ﻿namespace ProjectManager.Data.Repositories
 {
     using System;
-    using System.Data;
     using System.Data.SqlClient;
     using System.Threading;
     using System.Threading.Tasks;
@@ -46,34 +45,35 @@
 
             try
             {
-                using SqlConnection connection = new SqlConnection(this.ConnectionString);
-                using SqlCommand command = new SqlCommand
-                {
-                    Connection = connection,
-                    CommandType = CommandType.StoredProcedure,
-                    CommandText = "[dbo].[usp_InsertAction]"
-                };
-
-                SqlParameter[] parameters = new SqlParameter[]
-                {
-                    new SqlParameter("@dateOpened", projectAction.DateOpened),
-                    new SqlParameter("@dateClosed", projectAction.DateClosed),
-                    new SqlParameter("@dateDue", projectAction.DateDue),
-                    new SqlParameter("@owner", projectAction.Owner),
-                    new SqlParameter("@description", projectAction.Description),
-                    new SqlParameter("@resolution", projectAction.Resolution),
-                    new SqlParameter("@priority", projectAction.Priority),
-                    new SqlParameter("@status", projectAction.Status)
-                };
-
-                command.Parameters.AddRange(parameters);
-
-                if (command.Connection.State != ConnectionState.Open)
-                {
-                    await connection.OpenAsync().ConfigureAwait(false);
-                }
-
                 //TODO: execute stored procedure
+                await Task.FromResult(new NotImplementedException());
+
+                //using SqlConnection connection = new SqlConnection(this.ConnectionString);
+                //using SqlCommand command = new SqlCommand
+                //{
+                //    Connection = connection,
+                //    CommandType = CommandType.StoredProcedure,
+                //    CommandText = "[dbo].[usp_InsertAction]"
+                //};
+
+                //SqlParameter[] parameters = new SqlParameter[]
+                //{
+                //    new SqlParameter("@dateOpened", projectAction.DateOpened),
+                //    new SqlParameter("@dateClosed", projectAction.DateClosed),
+                //    new SqlParameter("@dateDue", projectAction.DateDue),
+                //    new SqlParameter("@owner", projectAction.Owner),
+                //    new SqlParameter("@description", projectAction.Description),
+                //    new SqlParameter("@resolution", projectAction.Resolution),
+                //    new SqlParameter("@priority", projectAction.Priority),
+                //    new SqlParameter("@status", projectAction.Status)
+                //};
+
+                //command.Parameters.AddRange(parameters);
+
+                //if (command.Connection.State != ConnectionState.Open)
+                //{
+                //    await connection.OpenAsync().ConfigureAwait(false);
+                //}
             }
             catch (SqlException ex)
             {

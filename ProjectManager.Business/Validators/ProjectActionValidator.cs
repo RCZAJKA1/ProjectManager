@@ -23,37 +23,55 @@
         private readonly DateTime MinDateLocal = TimeZoneInfo.ConvertTimeFromUtc(MinDateUtc, TimeZoneInfo.Local);
 
         /// <summary>
+        ///     The max date in UTC.
+        /// </summary>
+        private static readonly DateTime MaxDateUtc = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0, DateTimeKind.Utc);
+
+        /// <summary>
+        ///     The max date in local time.
+        /// </summary>
+        private readonly DateTime MaxDateLocal = TimeZoneInfo.ConvertTimeFromUtc(MaxDateUtc, TimeZoneInfo.Local);
+
+        /// <summary>
         ///     Defines the validation rules for the project action.
         /// </summary>
         public ProjectActionValidator()
         {
-            this.When(x => x.Id.HasValue, () =>
-            {
-                this.RuleFor(x => x.Id.Value).NotEmpty().GreaterThan(0);
-            });
-
+            // Required
             this.RuleFor(x => x.Owner).NotEmpty()
                 .DependentRules(() =>
                 {
                     this.RuleFor(x => x.Owner).Must(MustBeValidName).WithMessage("The Owner must only contain letters.");
                     this.RuleFor(x => x.Owner.Length).LessThanOrEqualTo(30);
                 });
-
             this.RuleFor(x => x.Description).NotEmpty()
                 .DependentRules(() =>
                 {
                     this.RuleFor(x => x.Description.Length).LessThanOrEqualTo(255);
                 });
 
+            // Nullable
+            this.When(x => x.Id.HasValue, () =>
+            {
+                this.RuleFor(x => x.Id.Value).GreaterThan(0);
+            });
+            this.When(x => x.DateDue.HasValue, () =>
+            {
+                this.RuleFor(x => x.DateDue.Value).GreaterThanOrEqualTo(this.MinDateLocal);
+            });
             this.When(x => x.DateOpened.HasValue, () =>
             {
-                this.RuleFor(x => x.DateOpened.Value).NotEmpty().GreaterThanOrEqualTo(this.MinDateLocal);
+                this.RuleFor(x => x.DateOpened.Value).GreaterThanOrEqualTo(this.MinDateLocal);
+                this.RuleFor(x => x.DateOpened.Value).LessThanOrEqualTo(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day));
             });
-
             this.When(x => x.DateClosed.HasValue, () =>
             {
-                this.RuleFor(x => x.DateOpened.Value).NotEmpty().WithMessage("The DateOpened must exist if the DateClosed exists.");
-                this.RuleFor(x => new { x.DateOpened, x.DateClosed }).Must(y => MustBeGreaterThanOrEqualToDateOpened(y.DateClosed.Value, y.DateOpened.Value));
+                this.RuleFor(x => x.DateOpened).NotEmpty().WithMessage("The DateOpened must exist if the DateClosed exists.");
+                this.RuleFor(x => x.DateClosed.Value).LessThanOrEqualTo(this.MaxDateLocal);
+            });
+            this.When(x => x.DateClosed.HasValue && x.DateOpened.HasValue, () =>
+            {
+                this.RuleFor(x => new { x.DateClosed, x.DateOpened }).Must(y => MustBeGreaterThanOrEqualToDateOpened(y.DateClosed.Value, y.DateOpened.Value)).WithMessage("The DateClosed must occur on or after the DateOpened.");
             });
         }
 

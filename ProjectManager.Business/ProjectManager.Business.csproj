@@ -14,4 +14,10 @@
     <ProjectReference Include="..\ProjectManager.Data\ProjectManager.Data.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+	<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+	  <_Parameter1>ProjectManager.Business.Tests</_Parameter1>
+	</AssemblyAttribute>
+  </ItemGroup>
+
 </Project>
