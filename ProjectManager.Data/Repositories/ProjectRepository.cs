@@ -73,15 +73,17 @@
                 {
                     try
                     {
-                        Project project = new Project();
-                        project.Id = reader.GetInt32("ProjectId");
-                        project.Name = reader.GetString("ProjectName");
-                        project.Description = reader.GetString("ProjectDesc");
-                        project.Owner = reader.GetString("ProjectOwner");
-                        project.Status = reader.GetString("ProjectStatus");
-                        project.StartDate = reader.GetDateTime("ProjectStartDate");
-                        project.EndDate = reader.GetDateTime("ProjectEndDate");
-                        project.DueDate = reader.GetDateTime("ProjectDueDate");
+                        Project project = new Project
+                        {
+                            Id = reader.GetInt32("ProjectId"),
+                            Name = reader.GetString("ProjectName"),
+                            Description = reader.GetString("ProjectDesc"),
+                            Owner = reader.GetString("ProjectOwner"),
+                            Status = reader.GetString("ProjectStatus"),
+                            StartDate = reader.GetDateTime("ProjectStartDate"),
+                            EndDate = reader.GetDateTime("ProjectEndDate"),
+                            DueDate = reader.GetDateTime("ProjectDueDate")
+                        };
 
                         projects.Add(project);
                     }

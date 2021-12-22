@@ -12,11 +12,10 @@
     public interface IProjectService
     {
         /// <summary>
-        ///     Gets all projects tied to the specified user identifier.
+        ///     Gets all projects tied to the current user.
         /// </summary>
-        /// <param name="userId">The user identifier.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>All projects tied to the specified user.</returns>
-        Task<IList<Project>> GetProjectsForUserAsync(int userId, CancellationToken cancellationToken = default);
+        /// <returns>All projects tied to the current user.</returns>
+        Task<IList<Project>> GetProjectsForUserAsync(CancellationToken cancellationToken = default);
     }
 }

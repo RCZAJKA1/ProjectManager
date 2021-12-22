@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Threading;
     using System.Threading.Tasks;
 
     using Microsoft.AspNetCore.Mvc;
@@ -25,6 +26,7 @@
         {
             this.Logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.ProjectService = projectService ?? throw new ArgumentNullException(nameof(projectService));
+            this.CancellationTokenSource = new CancellationTokenSource();
         }
 
         /// <summary>
@@ -38,15 +40,18 @@
         internal IProjectService ProjectService { get; }
 
         /// <summary>
+        ///     Gets the cancellation token source.
+        /// </summary>
+        private CancellationTokenSource CancellationTokenSource { get; }
+
+        /// <summary>
         ///     Displays the projects page.
         /// </summary>
         /// <returns>An <see cref="IActionResult"/> representing the projects page.</returns>
         [HttpGet]
         public async Task<IActionResult> Projects()
         {
-            int userId = 1; // stubbed in known user id
-
-            IList<Project> projects = await this.ProjectService.GetProjectsForUserAsync(userId).ConfigureAwait(false);
+            IList<Project> projects = await this.ProjectService.GetProjectsForUserAsync(this.CancellationTokenSource.Token).ConfigureAwait(false);
 
             ProjectViewModel projectViewModel = new ProjectViewModel
             {

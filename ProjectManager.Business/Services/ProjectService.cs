@@ -28,12 +28,11 @@
         internal IProjectRepository ProjectRepository { get; }
 
         /// <inheritdoc />
-        public async Task<IList<Project>> GetProjectsForUserAsync(int userId, CancellationToken cancellationToken = default)
+        public async Task<IList<Project>> GetProjectsForUserAsync(CancellationToken cancellationToken = default)
         {
-            if (userId < 1)
-            {
-                throw new ArgumentOutOfRangeException(nameof(userId));
-            }
+            cancellationToken.ThrowIfCancellationRequested();
+
+            int userId = 1; // stubbed in for known user id
 
             IEnumerable<Project> projects = await this.ProjectRepository.GetProjectsForUserAsync(userId, cancellationToken).ConfigureAwait(false);
             return projects.ToList();
