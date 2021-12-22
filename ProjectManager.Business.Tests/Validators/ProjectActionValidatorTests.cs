@@ -24,6 +24,8 @@
             this.mockRepository = new MockRepository(MockBehavior.Strict);
         }
 
+        private DateTime Now => new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute, 0);
+
         [Theory]
         [InlineData("")]
         [InlineData(" ")]
@@ -217,7 +219,7 @@
             Assert.NotNull(result.Errors);
             Assert.NotEmpty(result.Errors);
             Assert.Single(result.Errors);
-            Assert.Equal("'Date Closed Value' must be less than or equal to '12/19/2021 12:00:00 AM'.", result.Errors[0].ErrorMessage);
+            Assert.Equal($"'Date Closed Value' must be less than or equal to '{this.Now}'.", result.Errors[0].ErrorMessage);
         }
 
         [Fact]
@@ -245,7 +247,7 @@
 
         private ProjectAction CreateProjectAction()
         {
-            DateTime now = DateTime.Now;
+            DateTime now = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute, 0);
 
             return new ProjectAction
             {
