@@ -42,9 +42,16 @@ namespace ProjectManager.MVC
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+
+            services.AddTransient<IProjectService, ProjectService>();
             services.AddTransient<IProjectActionService, ProjectActionService>();
-            services.AddTransient<IValidator<ProjectAction>, ProjectActionValidator>();
+
+            services.AddTransient<IProjectRepository, ProjectRepository>();
             services.AddTransient<IProjectActionRepository, ProjectActionRepository>();
+
+            services.AddTransient<IValidator<ProjectAction>, ProjectActionValidator>();
+
+
         }
 
         /// <summary>
@@ -75,7 +82,7 @@ namespace ProjectManager.MVC
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=Projects}/{action=Projects}/{id?}");
             });
         }
     }

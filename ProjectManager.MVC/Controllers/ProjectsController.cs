@@ -1,9 +1,15 @@
 ﻿namespace ProjectManager.MVC.Controllers
 {
     using System;
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
 
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
+
+    using ProjectManager.Business.Services;
+    using ProjectManager.Common.Models;
+    using ProjectManager.MVC.Models;
 
     /// <summary>
     ///     Handles requests for the projects page.
@@ -15,9 +21,10 @@
         /// </summary>
         /// <param name="logger">The logger.</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public ProjectsController(ILogger<ProjectsController> logger)
+        public ProjectsController(ILogger<ProjectsController> logger, IProjectService projectService)
         {
             this.Logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this.ProjectService = projectService ?? throw new ArgumentNullException(nameof(projectService));
         }
 
         /// <summary>
@@ -26,13 +33,27 @@
         internal ILogger<ProjectsController> Logger { get; }
 
         /// <summary>
+        ///     Gets the projects service.
+        /// </summary>
+        internal IProjectService ProjectService { get; }
+
+        /// <summary>
         ///     Displays the projects page.
         /// </summary>
         /// <returns>An <see cref="IActionResult"/> representing the projects page.</returns>
         [HttpGet]
-        public IActionResult Projects()
+        public async Task<IActionResult> Projects()
         {
-            return this.View();
+            int userId = 1; // stubbed in known user id
+
+            IList<Project> projects = await this.ProjectService.GetProjectsForUserAsync(userId).ConfigureAwait(false);
+
+            ProjectViewModel projectViewModel = new ProjectViewModel
+            {
+                Projects = projects
+            };
+
+            return this.View(projectViewModel);
         }
     }
 }

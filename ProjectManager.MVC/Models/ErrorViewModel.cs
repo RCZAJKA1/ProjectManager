@@ -3,7 +3,7 @@ namespace ProjectManager.MVC.Models
     /// <summary>
     ///     Represents the error view model.
     /// </summary>
-    public class ErrorViewModel
+    public sealed class ErrorViewModel
     {
         /// <summary>
         ///     Gets or sets the request identifier.

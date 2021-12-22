@@ -2,6 +2,7 @@
 {
     using System;
     using System.Diagnostics.CodeAnalysis;
+    using System.Threading.Tasks;
 
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
@@ -47,11 +48,11 @@
         }
 
         [Fact]
-        public void Projects_NoLogic_ReturnsProjectsView()
+        public async Task Projects_NoLogic_ReturnsProjectsView()
         {
             ProjectsController controller = this.CreateProjectsController();
 
-            IActionResult result = controller.Projects();
+            IActionResult result = await controller.Projects();
 
             Assert.NotNull(result);
             ViewResult viewResult = Assert.IsType<ViewResult>(result);
