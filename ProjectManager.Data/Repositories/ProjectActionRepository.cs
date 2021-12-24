@@ -10,12 +10,17 @@
     using ProjectManager.Business.Models;
 
     /// <inheritdoc cref="IProjectActionRepository"/>
-    public class ProjectActionRepository : IProjectActionRepository
+    public sealed class ProjectActionRepository : IProjectActionRepository
     {
+        /// <summary>
+        ///     The logger.
+        /// </summary>
+        private readonly ILogger<ProjectActionRepository> _logger;
+
         /// <summary>
         ///     The sql connection string.
         /// </summary>
-        private readonly string ConnectionString;
+        private readonly string _connectionString;
 
         /// <summary>
         ///     Creates a new instance of the <see cref="ProjectActionRepository"/> class.
@@ -24,14 +29,10 @@
         /// <exception cref="ArgumentNullException"></exception>
         public ProjectActionRepository(ILogger<ProjectActionRepository> logger)
         {
-            this.Logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            this.ConnectionString = Environment.GetEnvironmentVariable("ProjectManagerConnectionString");
+            this._logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            //TODO: uncomment
+            this._connectionString = Environment.GetEnvironmentVariable("ProjectManagerConnectionString"); //?? throw new ArgumentNullException(nameof(this._connectionString));
         }
-
-        /// <summary>
-        ///     Gets the logger.
-        /// </summary>
-        internal ILogger<ProjectActionRepository> Logger { get; }
 
         /// <inheritdoc/>
         public async Task SaveActionAsync(ProjectAction projectAction, CancellationToken cancellationToken = default)
@@ -48,7 +49,7 @@
                 //TODO: execute stored procedure
                 await Task.FromResult(new NotImplementedException());
 
-                //using SqlConnection connection = new SqlConnection(this.ConnectionString);
+                //using SqlConnection connection = new SqlConnection(this._connectionString);
                 //using SqlCommand command = new SqlCommand
                 //{
                 //    Connection = connection,
@@ -77,7 +78,7 @@
             }
             catch (SqlException ex)
             {
-                this.Logger.LogError("An error occurred while saving the action.", ex.Message);
+                this._logger.LogError("An error occurred while saving the action to the database.", ex.Message);
                 throw;
             }
         }

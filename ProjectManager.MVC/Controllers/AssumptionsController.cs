@@ -11,19 +11,19 @@
     public sealed class AssumptionsController : Controller
     {
         /// <summary>
+        ///     The logger.
+        /// </summary>
+        private readonly ILogger<AssumptionsController> _logger;
+
+        /// <summary>
         ///     Creates a new instance of the <see cref="AssumptionsController"/> class.
         /// </summary>
         /// <param name="logger">The logger.</param>
         /// <exception cref="ArgumentNullException"></exception>
         public AssumptionsController(ILogger<AssumptionsController> logger)
         {
-            this.Logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this._logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
-
-        /// <summary>
-        ///     Gets the logger.
-        /// </summary>
-        internal ILogger<AssumptionsController> Logger { get; }
 
         /// <summary>
         ///     Displays the assumptions page.
@@ -32,6 +32,8 @@
         [HttpGet]
         public IActionResult Assumptions()
         {
+            this._logger.LogInformation("Entered GET method Assumptions().");
+
             return this.View();
         }
     }

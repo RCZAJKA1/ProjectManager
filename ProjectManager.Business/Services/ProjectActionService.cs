@@ -17,6 +17,21 @@
     public sealed class ProjectActionService : IProjectActionService
     {
         /// <summary>
+        ///     The logger.
+        /// </summary>
+        private readonly ILogger<ProjectActionService> _logger;
+
+        /// <summary>
+        ///     The project action validator.
+        /// </summary>
+        private readonly IValidator<ProjectAction> _validator;
+
+        /// <summary>
+        ///     The project action repository.
+        /// </summary>
+        private readonly IProjectActionRepository _repository;
+
+        /// <summary>
         ///     Creates a new instance of the <see cref="ProjectActionService"/> class.
         /// </summary>
         /// <param name="logger">The logger.</param>
@@ -25,29 +40,16 @@
         /// <exception cref="ArgumentNullException"></exception>
         public ProjectActionService(ILogger<ProjectActionService> logger, IValidator<ProjectAction> validator, IProjectActionRepository repository)
         {
-            this.Logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            this.Validator = validator ?? throw new ArgumentNullException(nameof(validator));
-            this.Repository = repository ?? throw new ArgumentNullException(nameof(repository));
+            this._logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this._validator = validator ?? throw new ArgumentNullException(nameof(validator));
+            this._repository = repository ?? throw new ArgumentNullException(nameof(repository));
         }
-
-        /// <summary>
-        ///     Gets the logger.
-        /// </summary>
-        internal ILogger<ProjectActionService> Logger { get; }
-
-        /// <summary>
-        ///     Gets the project action validator.
-        /// </summary>
-        internal IValidator<ProjectAction> Validator { get; }
-
-        /// <summary>
-        ///     Gets the project action repository.
-        /// </summary>
-        internal IProjectActionRepository Repository { get; }
 
         /// <inheritdoc/>
         public async Task AddProjectActionAsync(ProjectAction projectAction, CancellationToken cancellationToken = default)
         {
+            this._logger.LogInformation("Entered method AddProjectActionAsync().");
+
             if (projectAction == null)
             {
                 throw new ArgumentNullException(nameof(projectAction));
@@ -55,13 +57,13 @@
 
             // TODO: convert date time timezones
 
-            ValidationResult result = await this.Validator.ValidateAsync(projectAction, cancellationToken).ConfigureAwait(false);
+            ValidationResult result = await this._validator.ValidateAsync(projectAction, cancellationToken).ConfigureAwait(false);
             if (!result.IsValid)
             {
                 throw new ValidationException(result.Errors);
             }
 
-            await this.Repository.SaveActionAsync(projectAction, cancellationToken);
+            await this._repository.SaveActionAsync(projectAction, cancellationToken);
 
             Debug.WriteLine("Finished saving the action.");
         }

@@ -11,19 +11,19 @@
     public sealed class RisksController : Controller
     {
         /// <summary>
+        ///     The logger.
+        /// </summary>
+        private readonly ILogger<RisksController> _logger;
+
+        /// <summary>
         ///     Creates a new instance of the <see cref="RisksController"/> class.
         /// </summary>
         /// <param name="logger">The logger.</param>
         /// <exception cref="ArgumentNullException"></exception>
         public RisksController(ILogger<RisksController> logger)
         {
-            this.Logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this._logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
-
-        /// <summary>
-        ///     Gets the logger.
-        /// </summary>
-        internal ILogger<RisksController> Logger { get; }
 
         /// <summary>
         ///     Redirects to the risks page.
@@ -32,6 +32,8 @@
         [HttpGet]
         public IActionResult Risks()
         {
+            this._logger.LogInformation("Entered GET method Risks().");
+
             return this.View();
         }
     }

@@ -14,19 +14,19 @@
     public sealed class HomeController : Controller
     {
         /// <summary>
+        ///     The logger.
+        /// </summary>
+        private readonly ILogger<HomeController> _logger;
+
+        /// <summary>
         ///     Creates a new instance of the <see cref="HomeController"/> class.
         /// </summary>
         /// <param name="logger">The logger.</param>
         /// <exception cref="ArgumentNullException"></exception>
         public HomeController(ILogger<HomeController> logger)
         {
-            this.Logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this._logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
-
-        /// <summary>
-        ///     Gets the logger.
-        /// </summary>
-        internal ILogger<HomeController> Logger { get; }
 
         /// <summary>
         ///     Displays the home page.
@@ -35,6 +35,8 @@
         [HttpGet]
         public IActionResult Index()
         {
+            this._logger.LogInformation("Entered GET method Index().");
+
             return this.View();
         }
 
@@ -46,6 +48,8 @@
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
+            this._logger.LogInformation("Entered GET method Error().");
+
             ErrorViewModel errorViewModel = new ErrorViewModel
             {
                 RequestId = Activity.Current?.Id ?? this.HttpContext.TraceIdentifier

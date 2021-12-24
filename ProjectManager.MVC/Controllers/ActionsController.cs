@@ -17,32 +17,31 @@
     public sealed class ActionsController : Controller
     {
         /// <summary>
+        ///     The logger.
+        /// </summary>
+        private readonly ILogger<ActionsController> _logger;
+
+        /// <summary>
+        ///     The project action service.
+        /// </summary>
+        private readonly IProjectActionService _projectActionService;
+
+        /// <summary>
+        ///     THe cancellation token source.
+        /// </summary>
+        private readonly CancellationTokenSource _cancellationTokenSource;
+
+        /// <summary>
         ///     Creates a new instance of the <see cref="ActionsController"/> class.
         /// </summary>
         /// <param name="logger">The logger.</param>
         /// <exception cref="ArgumentNullException"></exception>
         public ActionsController(ILogger<ActionsController> logger, IProjectActionService actionsService)
         {
-            this.Logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            this.ActionsService = actionsService ?? throw new ArgumentNullException(nameof(actionsService));
-
-            this.CancellationTokenSource = new CancellationTokenSource();
+            this._logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this._projectActionService = actionsService ?? throw new ArgumentNullException(nameof(actionsService));
+            this._cancellationTokenSource = new CancellationTokenSource();
         }
-
-        /// <summary>
-        ///     Gets the logger.
-        /// </summary>
-        internal ILogger<ActionsController> Logger { get; }
-
-        /// <summary>
-        ///     Gets the actions service.
-        /// </summary>
-        internal IProjectActionService ActionsService { get; }
-
-        /// <summary>
-        ///     Gets the cancellation token source.
-        /// </summary>
-        private CancellationTokenSource CancellationTokenSource { get; }
 
         /// <summary>
         ///     Redirects to the actions page.
@@ -51,6 +50,8 @@
         [HttpGet]
         public IActionResult Actions()
         {
+            this._logger.LogInformation("Entered GET method Acions().");
+
             return this.View();
         }
 
@@ -61,6 +62,8 @@
         [HttpPost]
         public async Task<IActionResult> Actions(ActionViewModel actionViewModel)
         {
+            this._logger.LogInformation("Entered POST method Acions().");
+
             if (actionViewModel == null)
             {
                 throw new ArgumentNullException(nameof(actionViewModel));
@@ -68,7 +71,7 @@
 
             if (!this.ModelState.IsValid)
             {
-                this.Logger.LogInformation("The model state is invalid. Redirecting back to Actions.");
+                this._logger.LogInformation("The model state is invalid. Redirecting back to Actions.");
 
                 return this.RedirectToAction("Actions");
             }
@@ -85,7 +88,7 @@
                 Status = actionViewModel.Status
             };
 
-            await this.ActionsService.AddProjectActionAsync(action, this.CancellationTokenSource.Token).ConfigureAwait(false);
+            await this._projectActionService.AddProjectActionAsync(action, this._cancellationTokenSource.Token).ConfigureAwait(false);
 
             this.ViewBag.Success = $"Added action {actionViewModel.Description}";
 

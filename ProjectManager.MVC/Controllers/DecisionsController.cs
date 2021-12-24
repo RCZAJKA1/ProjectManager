@@ -11,19 +11,19 @@
     public sealed class DecisionsController : Controller
     {
         /// <summary>
+        ///     The logger.
+        /// </summary>
+        private readonly ILogger<DecisionsController> _logger;
+
+        /// <summary>
         ///     Creates a new instance of the <see cref="DecisionsController"/> class.
         /// </summary>
         /// <param name="logger">The logger.</param>
         /// <exception cref="ArgumentNullException"></exception>
         public DecisionsController(ILogger<DecisionsController> logger)
         {
-            this.Logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this._logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
-
-        /// <summary>
-        ///     Gets the logger.
-        /// </summary>
-        internal ILogger<DecisionsController> Logger { get; }
 
         /// <summary>
         ///     Redirects to the decisions page.
@@ -32,6 +32,8 @@
         [HttpGet]
         public IActionResult Decisions()
         {
+            this._logger.LogInformation("Entered GET method Decisions().");
+
             return this.View();
         }
     }

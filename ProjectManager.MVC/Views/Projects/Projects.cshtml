@@ -1,8 +1,51 @@
 ﻿@model ProjectManager.MVC.Models.ProjectViewModel
 @{
-    ViewData["Title"] = "Projects - Home";
+    ViewData["Title"] = "Projects";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Projects</h1>
-</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+    <div class="text-center">
+        @foreach (var item in @Model.Projects) {
+            <tr>
+                <td>
+                    Project Name:
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+            </tr>
+            @*<tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Owner)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Status)
+                </td>
+            </tr>*@
+        }
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

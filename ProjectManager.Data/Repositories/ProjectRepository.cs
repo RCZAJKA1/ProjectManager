@@ -15,23 +15,24 @@
     public sealed class ProjectRepository : IProjectRepository
     {
         /// <summary>
+        ///     The logger.
+        /// </summary>
+        private readonly ILogger<ProjectRepository> _logger;
+
+        /// <summary>
         ///     The sql connection string.
         /// </summary>
-        private readonly string ConnectionString;
+        private readonly string _connectionString;
 
         /// <summary>
         ///     Creates a new instance of the <see cref="ProjectRepository"/> class.
         /// </summary>
         public ProjectRepository(ILogger<ProjectRepository> logger)
         {
-            this.Logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            this.ConnectionString = Environment.GetEnvironmentVariable("ProjectManagerConnectionString");
+            this._logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            //TODO: uncomment
+            this._connectionString = Environment.GetEnvironmentVariable("ProjectManagerConnectionString");// ?? throw new ArgumentNullException(nameof(this._connectionString));
         }
-
-        /// <summary>
-        ///     Gets the logger.
-        /// </summary>
-        internal ILogger<ProjectRepository> Logger { get; }
 
         /// <inheritdoc/>
         public async Task<IEnumerable<Project>> GetProjectsForUserAsync(int userId, CancellationToken cancellationToken = default)
@@ -47,7 +48,7 @@
 
             try
             {
-                using SqlConnection connection = new SqlConnection(this.ConnectionString);
+                using SqlConnection connection = new SqlConnection(this._connectionString);
                 using SqlCommand command = new SqlCommand
                 {
                     Connection = connection,
@@ -89,14 +90,14 @@
                     }
                     catch (InvalidCastException exception)
                     {
-                        this.Logger.LogError($"An error occurred while parsing the sql data reader values: {exception.Message}");
+                        this._logger.LogError($"An error occurred while parsing the sql data reader values: {exception.Message}");
                         throw;
                     }
                 }
             }
             catch (SqlException ex)
             {
-                this.Logger.LogError("An error occurred while saving the action.", ex.Message);
+                this._logger.LogError("An error occurred while saving the action.", ex.Message);
                 throw;
             }
 

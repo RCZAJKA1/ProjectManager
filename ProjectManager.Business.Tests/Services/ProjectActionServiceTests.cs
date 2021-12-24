@@ -19,11 +19,11 @@
 
     public sealed class ProjectActionServiceTests
     {
-        private MockRepository mockRepository;
+        private readonly MockRepository mockRepository;
 
-        private Mock<ILogger<ProjectActionService>> mockLogger;
-        private Mock<IValidator<ProjectAction>> mockValidator;
-        private Mock<IProjectActionRepository> mockProjectActionRepository;
+        private readonly Mock<ILogger<ProjectActionService>> mockLogger;
+        private readonly Mock<IValidator<ProjectAction>> mockValidator;
+        private readonly Mock<IProjectActionRepository> mockProjectActionRepository;
 
         public ProjectActionServiceTests()
         {
@@ -69,9 +69,7 @@
         {
             ProjectActionService service = this.CreateService();
 
-            Assert.Equal(service.Logger, this.mockLogger.Object);
-            Assert.Equal(service.Validator, this.mockValidator.Object);
-            Assert.Equal(service.Repository, this.mockProjectActionRepository.Object);
+            Assert.NotNull(service);
 
             this.mockRepository.VerifyAll();
         }

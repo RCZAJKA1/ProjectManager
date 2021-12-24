@@ -58,8 +58,7 @@
         {
             ActionsController actionsController = this.CreateActionsController();
 
-            Assert.Same(actionsController.Logger, this.mockLogger.Object);
-            Assert.Same(actionsController.ActionsService, this.mockProjectActionService.Object);
+            Assert.NotNull(actionsController);
 
             this.mockRepository.VerifyAll();
         }
