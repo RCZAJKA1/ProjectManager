@@ -1,6 +1,7 @@
 namespace ProjectManager.MVC
 {
     using System;
+    using System.IO;
 
     using FluentValidation;
 
@@ -9,10 +10,12 @@ namespace ProjectManager.MVC
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
+    using Microsoft.Extensions.Logging;
 
     using ProjectManager.Business.Models;
     using ProjectManager.Business.Services;
     using ProjectManager.Business.Validators;
+    using ProjectManager.Common.Models;
     using ProjectManager.Data.Repositories;
 
     /// <summary>
@@ -49,9 +52,8 @@ namespace ProjectManager.MVC
             services.AddTransient<IProjectRepository, ProjectRepository>();
             services.AddTransient<IProjectActionRepository, ProjectActionRepository>();
 
+            services.AddTransient<IValidator<Project>, ProjectValidator>();
             services.AddTransient<IValidator<ProjectAction>, ProjectActionValidator>();
-
-
         }
 
         /// <summary>
@@ -59,8 +61,11 @@ namespace ProjectManager.MVC
         /// </summary>
         /// <param name="app">The application builder.</param>
         /// <param name="env">The web host environment.</param>
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
         {
+            string rootPath = Path.GetPathRoot(Environment.SystemDirectory);
+            loggerFactory.AddFile($"{rootPath}\\Logs\\Log.txt");
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

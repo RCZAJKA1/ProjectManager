@@ -11,6 +11,7 @@
     [ExcludeFromCodeCoverage]
     public sealed class ProjectAction
     {
+        // TODO: make non-nullable
         /// <summary>
         ///     Gets or sets the identifier.
         /// </summary>

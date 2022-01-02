@@ -83,7 +83,7 @@
         /// <returns><c>true</c> if the name only contains valid characters, otherwise <c>false</c>.</returns>
         private static bool MustBeValidName(string name)
         {
-            Regex regex = new Regex(@"^[a-zA-Z]+$");
+            Regex regex = new Regex(@"^[a-zA-Z\s]+$");
             return regex.IsMatch(name);
         }
     }

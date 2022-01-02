@@ -15,5 +15,20 @@
         ///     Gets or sets the projects.
         /// </summary>
         public IList<Project> Projects { get; set; }
+
+        /// <summary>
+        ///     Gets or sets all available owners.
+        /// </summary>
+        public IDictionary<int, string> Owners { get; set; }
+
+        /// <summary>
+        ///     Gets or sets all available statuses.
+        /// </summary>
+        public IDictionary<int, string> Statuses { get; set; }
+
+        /// <summary>
+        ///     Gets or sets all available categories.
+        /// </summary>
+        public IDictionary<int, string> Categories { get; set; }
     }
 }

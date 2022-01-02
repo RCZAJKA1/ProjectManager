@@ -54,31 +54,37 @@
         {
             this._logger.LogInformation("Entered method Projects().");
 
-            //IList<Project> projects = await this._projectService.GetProjectsForUserAsync(this._cancellationTokenSource.Token).ConfigureAwait(false);
-
-            // TODO: remove stubbed in database return
-            DateTime now = DateTime.Now;
-            IList<Project> projects = new List<Project>
-            {
-                new Project
-                {
-                    Name = "testProjectName",
-                    Description = "testProjectDescription",
-                    Id = 1,
-                    Owner = "testProjectOwner",
-                    Status = "Active",
-                    StartDate = now.AddDays(-7),
-                    EndDate = now,
-                    DueDate = now
-                }
-            };
+            // TODO: convert project population to an optional search
+            IList<Project> projects = await this._projectService.GetProjectsForUserAsync(this._cancellationTokenSource.Token).ConfigureAwait(false);
 
             ProjectViewModel projectViewModel = new ProjectViewModel
             {
-                Projects = projects
+                Projects = projects,
+                Owners = await this._projectService.GetActiveProjectOwnersAsync().ConfigureAwait(false),
+                Statuses = await this._projectService.GetProjectStatusesAsync().ConfigureAwait(false),
+                Categories = await this._projectService.GetProjectCategoriesAsync().ConfigureAwait(false)
             };
 
             return this.View(projectViewModel);
+        }
+
+        /// <summary>
+        ///     Adds a new project.
+        /// </summary>
+        /// <returns>An <see cref="IActionResult"/> representing the projects page.</returns>
+        [HttpPost]
+        public async Task<IActionResult> AddProject(Project project)
+        {
+            this._logger.LogInformation("Entered method AddProject().");
+
+            if (project == null)
+            {
+                throw new ArgumentNullException(nameof(project));
+            }
+
+            await this._projectService.AddProjectAsync(project).ConfigureAwait(false);
+
+            return this.RedirectToAction("Projects");
         }
     }
 }

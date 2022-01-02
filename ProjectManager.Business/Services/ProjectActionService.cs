@@ -60,6 +60,7 @@
             ValidationResult result = await this._validator.ValidateAsync(projectAction, cancellationToken).ConfigureAwait(false);
             if (!result.IsValid)
             {
+                this._logger.LogError("The action failed validation.", result.Errors);
                 throw new ValidationException(result.Errors);
             }
 
