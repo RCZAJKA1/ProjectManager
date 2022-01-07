@@ -1,0 +1,83 @@
+﻿@{
+    ViewData["Title"] = "Actions";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body> 
+    <div class="text-center">
+        <h1 class="display-4">Actions</h1>
+        <h2 class="successMessage">@ViewBag.Success</h2>
+    </div>
+     <div>
+        <form method="post" enctype="multipart/form-data" asp-controller="Actions" asp-action="Actions">
+            <table>
+                <tr>
+                    <td>Date Opened: </td>
+                    <td><input type="date" id="dateOpened" name="DateOpened"/></td>
+                </tr>
+                <tr>
+                    <td>Date Due: </td>
+                    <td><input type="date" id="dateDue" name="DateDue"/></td>
+                </tr>
+                <tr>
+                    <td>Date Closed: </td>
+                    <td><input type="date" id="dateClosed" name="DateClosed"/></td>
+                </tr>
+                <tr>
+                    <td>Status: </td>
+                    <td>
+                        <div style:"width:200px;">
+                            <select>
+                                <option value="0">Open</option>
+                                <option value="1">Closed</option>
+                                <option value="2">InProcess</option>
+                                <option value="3">Unknown</option>
+                            </select>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Description: </td>
+                    <td><input type="text" id="description" name="Description"/></td>
+                </tr>
+                 <tr>
+                    <td>Priority: </td>
+                    <td>
+                        <div style:"width:200px;">
+                            <select>
+                                <option value="0">Low</option>
+                                <option value="1">Medium</option>
+                                <option value="2">High</option>
+                                <option value="3">Unknown</option>
+                            </select>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Owner: </td>
+                    <td><input type="text" id="owner" name="Owner"/></td>
+                </tr>
+                <tr>
+                    <td>Resolution: </td>
+                    <td><input type="text" id="resolution" name="Resolution"/></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><input type="submit" value="Submit"/></td>
+                </tr>
+            </table>
+            <hr/>
+        </form>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

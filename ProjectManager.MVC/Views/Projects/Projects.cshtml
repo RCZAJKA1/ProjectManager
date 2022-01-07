@@ -1,0 +1,157 @@
+﻿@model ProjectManager.MVC.Models.ProjectViewModel
+@{
+    ViewData["Title"] = "Projects";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+        table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+        td, th {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+        tr:nth-child(even) {
+            background-color: #dddddd;
+        }
+    </style>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+
+<body> 
+    <div class="text-center">
+        <h1 class="display-4">Projects</h1>
+    </div>
+     <div>
+        <form method="post" enctype="multipart/form-data" asp-controller="Projects" asp-action="AddProject">
+            <table>
+                <tr>
+                    <td>Name: </td>
+                    <td><input type="text" id="name" name="Name"/></td>
+                </tr>
+
+                <tr>
+                    <td>Description: </td>
+                    <td><input type="text" id="description" name="Description"/></td>
+                </tr>
+
+                <tr>
+                    <td>Owner: </td>
+                        <td>
+                            <div style:"width:200px;">
+                                <select id="ownerId" name="OwnerId">
+                                    @foreach(KeyValuePair<int, string> owner in Model.Owners)
+                                    {
+                                        <option value="@owner.Key">@owner.Value</option>
+                                    }
+                                </select>
+                            </div>
+                        </td>
+                </tr>
+
+                <tr>
+                    <td>Status: </td>
+                    <td>
+                        <div style:"width:200px;">
+                            <select id="statusId" name="StatusId">
+                                @foreach(KeyValuePair<int, string> status in Model.Statuses)
+                                {
+                                    <option value="@status.Key">@status.Value</option>
+                                }
+                            </select>
+                        </div>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>Category: </td>
+                    <td>
+                        <div style:"width:200px;">
+                            <select id="categoryId" name="CategoryId">
+                                @foreach(KeyValuePair<int, string> category in Model.Categories)
+                                {
+                                    <option value="@category.Key">@category.Value</option>
+                                }
+                            </select>
+                        </div>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>Date Opened: </td>
+                    <td><input type="date" id="dateOpened" name="StartDate"/></td>
+                </tr>
+
+                <tr>
+                    <td>Date Closed: </td>
+                    <td><input type="date" id="dateClosed" name="EndDate"/></td>
+                </tr>
+
+                <tr>
+                    <td>Date Due: </td>
+                    <td><input type="date" id="dateDue" name="DueDate"/></td>
+                </tr>
+
+                <tr>
+                    <td></td>
+                    <td><input type="submit" value="Add"/></td>
+                </tr>
+
+            </table>
+            <hr/>
+        </form>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Owner</th>
+        <th>Status</th>
+        <th>Start</th>
+        <th>End</th>
+        <th>Due</th>
+    </tr>
+    @foreach (var item in @Model.Projects) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+                <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+                <td>
+                @Html.DisplayFor(modelItem => item.Owner)
+            </td>
+                <td>
+                @Html.DisplayFor(modelItem => item.Status)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.StartDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EndDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DueDate)
+            </td>
+        </tr>
+    }
+</table>
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+</html>
