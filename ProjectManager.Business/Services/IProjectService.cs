@@ -19,6 +19,14 @@
         Task<IList<Project>> GetProjectsForUserAsync(CancellationToken cancellationToken = default);
 
         /// <summary>
+        ///     Searches for projects using the specified criteria.
+        /// </summary>
+        /// <param name="name">The project name.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>All projects that meet the specified criteria.</returns>
+        Task<IList<Project>> SearchProjectsAsync(string name, CancellationToken cancellationToken = default);
+
+        /// <summary>
         ///      Adds the specified project.
         /// </summary>
         /// <param name="project">The project.</param>

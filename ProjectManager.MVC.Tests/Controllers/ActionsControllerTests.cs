@@ -1,7 +1,6 @@
 ﻿namespace ProjectManager.MVC.Tests.Controllers
 {
     using System;
-    using System.Diagnostics.CodeAnalysis;
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -17,7 +16,6 @@
 
     using Xunit;
 
-    [ExcludeFromCodeCoverage]
     public sealed class ActionsControllerTests
     {
         private readonly MockRepository mockRepository;

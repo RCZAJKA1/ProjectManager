@@ -1,0 +1,115 @@
+﻿@using ProjectManager.Common.Models
+@model IEnumerable<Project>
+
+<style>
+    deleteButton{
+        display: -moz-inline-stack;
+        display: inline-block;
+        width: 391px;
+        height: 62px;
+        line-height: 62px;
+        vertical-align: text-middle;
+        text-align: center;
+        color: #ebe6eb;
+        font-family: Zenhei;
+        font-size: 14px;
+        font-weight: normal;
+        font-style: normal;
+        text-shadow: #222222 1px 1px 0;
+    }
+    deleteButton:hover{
+     background: #383;
+}
+</style>
+
+<style>
+        table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+        td, th {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+    </style>
+
+<div style="border:thin solid black">
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Owner</th>
+            <th>Status</th>
+            <th>Start</th>
+            <th>End</th>
+            <th>Due</th>
+            <th></th>
+        </tr>
+        @foreach (Project project in Model) {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => project.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => project.Description)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => project.Owner)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => project.Status)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => project.StartDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => project.EndDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => project.DueDate)
+                </td>
+                <td>
+                    @*<input type="button" value="Delete" onclick="DeleteProject(@project.Id, @project.Name)">*@
+                    @*<input type="button" value="Delete" onclick="location.href='@Url.Action("DeleteProject", "Projects", new {id = @project.Id, name = @project.Name})'" />*@
+                    <input type="button" value="Delete" onclick="Test()">
+                </td>
+            </tr>
+        }
+    </table>
+</div>
+
+@functions{
+    public void DeleteProject(int id, string name)
+    {
+        @Url.Action("DeleteProject", "Projects", new {id = id, projectName = name});
+    }
+}
+
+<script>
+    function DeleteProject(id, name){
+        if (confirm('Are you sure you want to delete project ${name}?')){
+            $.ajax({
+                url: 'Projects/DeleteProject',
+                type: 'POST',
+                contentType: 'application/json;',
+                data: JSON.stringify({ id: id, projectName = name }),
+                success: function (valid)
+                {
+                    if(valid) {
+                        alert('Project successfully deleted.');
+                    } else { 
+                        alert('Project failed to delete.');
+                    }
+                }
+            });
+        }
+    }
+</script>
+<script>
+    function Test(){
+        alert('Project successfully deleted.');
+    )
+</script>
+<script type="text/javascript" src="//code.jquery.com/jquery-1.7.1.js"></script>

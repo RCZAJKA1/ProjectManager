@@ -19,15 +19,10 @@
             text-align: left;
             padding: 8px;
         }
-        tr:nth-child(even) {
-            background-color: #dddddd;
-        }
     </style>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" />
 </head>
 
-<body> 
+<body>
     <div class="text-center">
         <h1 class="display-4">Projects</h1>
     </div>
@@ -103,55 +98,32 @@
 
                 <tr>
                     <td></td>
-                    <td><input type="submit" value="Add"/></td>
+                    <td>
+                        <input type="submit" value="Add" />
+                    </td>
                 </tr>
 
             </table>
             <hr/>
         </form>
-    </div>
-
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    </div>   
+    <form id="formSearchProjects" asp-action="SearchProjects" method="get" data-ajax="true" data-ajax-method="get" data-ajax-update="#projectsTable" data-ajax-mode='replace' data-ajax-url="@Url.Action("SearchProjects","Projects")">
+         <table>
+            <tr>
+                <td><input type="submit" value="Search"/></td>
+                <td>Name: </td>
+                <td><input id="name" type="text" name="Name"/></td>
+            </tr>
+        </table>
+        <div id="projectsTable">
+            @*Placeholder for project search table*@
+        </div>
+       </form>
 </body>
-
-<table>
-    <tr>
-        <th>Name</th>
-        <th>Description</th>
-        <th>Owner</th>
-        <th>Status</th>
-        <th>Start</th>
-        <th>End</th>
-        <th>Due</th>
-    </tr>
-    @foreach (var item in @Model.Projects) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-                <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-                <td>
-                @Html.DisplayFor(modelItem => item.Owner)
-            </td>
-                <td>
-                @Html.DisplayFor(modelItem => item.Status)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.StartDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.EndDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DueDate)
-            </td>
-        </tr>
-    }
-</table>
 
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+@section scripts{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-ajax-unobtrusive/3.2.6/jquery.unobtrusive-ajax.min.js"></script>
+}
 </html>

@@ -10,6 +10,7 @@
 
     using Microsoft.Extensions.Logging;
 
+    using ProjectManager.Common;
     using ProjectManager.Common.Models;
 
     /// <inheritdoc cref="IProjectRepository"/>
@@ -18,26 +19,26 @@
         /// <summary>
         ///     The logger.
         /// </summary>
-        private readonly ILogger<ProjectRepository> _logger;
+        private readonly ILogger<ProjectRepository> logger;
 
         /// <summary>
         ///     The sql connection string.
         /// </summary>
-        private readonly string _connectionString;
+        private readonly string connectionString;
 
         /// <summary>
         ///     Creates a new instance of the <see cref="ProjectRepository"/> class.
         /// </summary>
         public ProjectRepository(ILogger<ProjectRepository> logger)
         {
-            this._logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            this._connectionString = Environment.GetEnvironmentVariable("ProjectManagerConnectionString");
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this.connectionString = Environment.GetEnvironmentVariable("ProjectManagerConnectionString");
         }
 
         /// <inheritdoc/>
         public async Task<IEnumerable<Project>> GetProjectsForUserAsync(int userId, CancellationToken cancellationToken = default)
         {
-            this._logger.LogInformation("Entered method GetProjectsForUserAsync().");
+            this.logger.LogInformation("Entered method ProjectRepository.GetProjectsForUserAsync().");
 
             if (userId < 1)
             {
@@ -50,7 +51,7 @@
 
             try
             {
-                using SqlConnection connection = new SqlConnection(this._connectionString);
+                using SqlConnection connection = new SqlConnection(this.connectionString);
                 using SqlCommand command = new SqlCommand
                 {
                     Connection = connection,
@@ -94,14 +95,14 @@
                     }
                     catch (Exception exception)
                     {
-                        this._logger.LogError($"An error occurred while parsing the sql data reader values: {exception.Message}");
+                        this.logger.LogError($"An error occurred while parsing the sql data reader values: {exception.Message}");
                         throw;
                     }
                 }
             }
             catch (SqlException ex)
             {
-                this._logger.LogError("An error occurred while saving the action.", ex.Message);
+                this.logger.LogError("A SQL error occurred while getting projects for user.", ex.Message);
                 throw;
             }
 
@@ -111,7 +112,7 @@
         /// <inheritdoc/>
         public async Task AddProjectAsync(Project project, CancellationToken cancellationToken = default)
         {
-            this._logger.LogInformation("Entered method AddProjectAsync().");
+            this.logger.LogInformation("Entered method ProjectRepository.AddProjectAsync().");
 
             if (project == null)
             {
@@ -122,7 +123,7 @@
 
             try
             {
-                using SqlConnection connection = new SqlConnection(this._connectionString);
+                using SqlConnection connection = new SqlConnection(this.connectionString);
                 using SqlCommand command = new SqlCommand
                 {
                     Connection = connection,
@@ -155,7 +156,7 @@
             }
             catch (SqlException ex)
             {
-                this._logger.LogError("An error occurred while adding the project.", ex.Message);
+                this.logger.LogError("A SQL error occurred while adding the project.", ex.Message);
                 throw;
             }
         }
@@ -163,7 +164,7 @@
         /// <inheritdoc/>
         public async Task<IDictionary<int, string>> GetActiveProjectOwnersAsync(CancellationToken cancellationToken = default)
         {
-            this._logger.LogInformation("Entered method GetActiveProjectOwnersAsync().");
+            this.logger.LogInformation("Entered method ProjectRepository.GetActiveProjectOwnersAsync().");
 
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -171,7 +172,7 @@
 
             try
             {
-                using SqlConnection connection = new SqlConnection(this._connectionString);
+                using SqlConnection connection = new SqlConnection(this.connectionString);
                 using SqlCommand command = new SqlCommand
                 {
                     Connection = connection,
@@ -198,14 +199,14 @@
                     }
                     catch (Exception exception)
                     {
-                        this._logger.LogError($"An error occurred while parsing the sql data reader values: {exception.Message}");
+                        this.logger.LogError($"An error occurred while parsing the sql data reader values: {exception.Message}");
                         throw;
                     }
                 }
             }
             catch (SqlException ex)
             {
-                this._logger.LogError("An error occurred while reading the project owners.", ex.Message);
+                this.logger.LogError("A SQL error occurred while reading the the active project owners.", ex.Message);
                 throw;
             }
 
@@ -215,7 +216,7 @@
         /// <inheritdoc/>
         public async Task<IDictionary<int, string>> GetProjectStatusesAsync(CancellationToken cancellationToken = default)
         {
-            this._logger.LogInformation("Entered method GetProjectStatusesAsync().");
+            this.logger.LogInformation("Entered method ProjectRepository.GetProjectStatusesAsync().");
 
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -223,7 +224,7 @@
 
             try
             {
-                using SqlConnection connection = new SqlConnection(this._connectionString);
+                using SqlConnection connection = new SqlConnection(this.connectionString);
                 using SqlCommand command = new SqlCommand
                 {
                     Connection = connection,
@@ -250,14 +251,14 @@
                     }
                     catch (Exception exception)
                     {
-                        this._logger.LogError($"An error occurred while parsing the sql data reader values: {exception.Message}");
+                        this.logger.LogError($"An error occurred while parsing the sql data reader values: {exception.Message}");
                         throw;
                     }
                 }
             }
             catch (SqlException ex)
             {
-                this._logger.LogError("An error occurred while reading the project statuses.", ex.Message);
+                this.logger.LogError("A SQL error occurred while reading the project statuses.", ex.Message);
                 throw;
             }
 
@@ -267,7 +268,7 @@
         /// <inheritdoc/>
         public async Task<IDictionary<int, string>> GetProjectCategoriesAsync(CancellationToken cancellationToken = default)
         {
-            this._logger.LogInformation("Entered method GetProjectCategoriesAsync().");
+            this.logger.LogInformation("Entered method ProjectRepository.GetProjectCategoriesAsync().");
 
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -275,7 +276,7 @@
 
             try
             {
-                using SqlConnection connection = new SqlConnection(this._connectionString);
+                using SqlConnection connection = new SqlConnection(this.connectionString);
                 using SqlCommand command = new SqlCommand
                 {
                     Connection = connection,
@@ -302,18 +303,94 @@
                     }
                     catch (Exception exception)
                     {
-                        this._logger.LogError($"An error occurred while parsing the sql data reader values: {exception.Message}");
+                        this.logger.LogError($"An error occurred while parsing the sql data reader values: {exception.Message}");
                         throw;
                     }
                 }
             }
             catch (SqlException ex)
             {
-                this._logger.LogError("An error occurred while reading the project categories.", ex.Message);
+                this.logger.LogError("A SQL error occurred while reading the project categories.", ex.Message);
                 throw;
             }
 
             return projectCategories;
+        }
+
+        /// <inheritdoc/>
+        public async Task<IList<Project>> SearchProjectsAsync(int userId, string projectName, CancellationToken cancellationToken = default)
+        {
+            this.logger.LogInformation("Entered method ProjectRepository.SearchProjectsAsync().");
+
+            if (userId < 1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(userId));
+            }
+
+            projectName.ThrowIfNull();
+
+            cancellationToken.ThrowIfCancellationRequested();
+
+            IList<Project> projects = new List<Project>();
+            try
+            {
+                using SqlConnection connection = new SqlConnection(this.connectionString);
+                using SqlCommand command = new SqlCommand
+                {
+                    Connection = connection,
+                    CommandType = CommandType.StoredProcedure,
+                    CommandText = "[dbo].[usp_SearchProjects]"
+                };
+
+                SqlParameter[] parameters = new SqlParameter[]
+                {
+                    new SqlParameter("@userId", userId),
+                    new SqlParameter("@projectName", projectName)
+                };
+
+                command.Parameters.AddRange(parameters);
+
+                if (command.Connection.State != ConnectionState.Open)
+                {
+                    await connection.OpenAsync().ConfigureAwait(false);
+                }
+
+                using SqlDataReader reader = await command.ExecuteReaderAsync(cancellationToken).ConfigureAwait(false);
+
+                while (await reader.ReadAsync(cancellationToken).ConfigureAwait(false))
+                {
+                    try
+                    {
+                        List<string> columns = Enumerable.Range(0, reader.FieldCount).Select(reader.GetName).ToList();
+
+                        Project project = new Project
+                        {
+                            Id = reader.GetInt32(columns[0]),
+                            Name = reader.GetString(columns[1]),
+                            Description = reader.GetString(columns[2]),
+                            StartDate = reader.IsDBNull(columns[3]) ? (DateTime?)null : reader.GetDateTime(columns[3]),
+                            EndDate = reader.IsDBNull(columns[4]) ? (DateTime?)null : reader.GetDateTime(columns[4]),
+                            DueDate = reader.IsDBNull(columns[5]) ? (DateTime?)null : reader.GetDateTime(columns[5]),
+                            Status = reader.GetString(columns[6]),
+                            Owner = reader.GetString(columns[7])
+                        };
+
+                        projects.Add(project);
+                    }
+                    catch (Exception exception)
+                    {
+                        this.logger.LogError($"An error occurred while parsing the sql data reader values: {exception.Message}");
+                        throw;
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                this.logger.LogError("A SQL error occurred while searching for projects.", ex.Message);
+                throw;
+            }
+
+            return projects;
         }
     }
 }

@@ -9,6 +9,7 @@
     using Microsoft.Extensions.Logging;
 
     using ProjectManager.Business.Services;
+    using ProjectManager.Common;
     using ProjectManager.Common.Models;
     using ProjectManager.MVC.Models;
 
@@ -20,17 +21,17 @@
         /// <summary>
         ///     The logger.
         /// </summary>
-        private readonly ILogger<ProjectsController> _logger;
+        private readonly ILogger<ProjectsController> logger;
 
         /// <summary>
         ///     The project service.
         /// </summary>
-        private readonly IProjectService _projectService;
+        private readonly IProjectService projectService;
 
         /// <summary>
         ///     The cancellation token source.
         /// </summary>
-        private readonly CancellationTokenSource _cancellationTokenSource;
+        private readonly CancellationTokenSource cancellationTokenSource;
 
         /// <summary>
         ///     Creates a new instance of the <see cref="ProjectsController"/> class.
@@ -40,9 +41,9 @@
         /// <exception cref="ArgumentNullException"></exception>
         public ProjectsController(ILogger<ProjectsController> logger, IProjectService projectService)
         {
-            this._logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            this._projectService = projectService ?? throw new ArgumentNullException(nameof(projectService));
-            this._cancellationTokenSource = new CancellationTokenSource();
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this.projectService = projectService ?? throw new ArgumentNullException(nameof(projectService));
+            this.cancellationTokenSource = new CancellationTokenSource();
         }
 
         /// <summary>
@@ -52,17 +53,14 @@
         [HttpGet]
         public async Task<IActionResult> Projects()
         {
-            this._logger.LogInformation("Entered method Projects().");
-
-            // TODO: convert project population to an optional search
-            IList<Project> projects = await this._projectService.GetProjectsForUserAsync(this._cancellationTokenSource.Token).ConfigureAwait(false);
+            this.logger.LogInformation("Entered method Projects().");
 
             ProjectViewModel projectViewModel = new ProjectViewModel
             {
-                Projects = projects,
-                Owners = await this._projectService.GetActiveProjectOwnersAsync().ConfigureAwait(false),
-                Statuses = await this._projectService.GetProjectStatusesAsync().ConfigureAwait(false),
-                Categories = await this._projectService.GetProjectCategoriesAsync().ConfigureAwait(false)
+                Projects = new List<Project>(),
+                Owners = await this.projectService.GetActiveProjectOwnersAsync(this.cancellationTokenSource.Token).ConfigureAwait(false),
+                Statuses = await this.projectService.GetProjectStatusesAsync(this.cancellationTokenSource.Token).ConfigureAwait(false),
+                Categories = await this.projectService.GetProjectCategoriesAsync(this.cancellationTokenSource.Token).ConfigureAwait(false)
             };
 
             return this.View(projectViewModel);
@@ -71,20 +69,71 @@
         /// <summary>
         ///     Adds a new project.
         /// </summary>
+        /// <param name="project">The project.</param>
         /// <returns>An <see cref="IActionResult"/> representing the projects page.</returns>
         [HttpPost]
         public async Task<IActionResult> AddProject(Project project)
         {
-            this._logger.LogInformation("Entered method AddProject().");
+            this.logger.LogInformation("Entered method AddProject().");
 
             if (project == null)
             {
                 throw new ArgumentNullException(nameof(project));
             }
 
-            await this._projectService.AddProjectAsync(project).ConfigureAwait(false);
+            if (!this.ModelState.IsValid)
+            {
+                this.logger.LogError("Model state invalid.");
+
+                return this.RedirectToAction("Projects");
+            }
+
+            await this.projectService.AddProjectAsync(project, this.cancellationTokenSource.Token).ConfigureAwait(false);
 
             return this.RedirectToAction("Projects");
+        }
+
+        /// <summary>
+        ///     Searches for projects using the specified criteria.
+        /// </summary>
+        /// <param name="name">The project name.</param>
+        /// <returns>An <see cref="IActionResult"/> representing the search projects partial view.</returns>
+        public async Task<IActionResult> SearchProjects(string name)
+        {
+            this.logger.LogInformation("Entered method SearchProjects().");
+
+            // Empty excludes filter
+            if (name == null)
+            {
+                name = String.Empty;
+            }
+
+            name.EnsureOnlyLettersAndNumbers();
+
+            IList<Project> projects = await this.projectService.SearchProjectsAsync(name, this.cancellationTokenSource.Token).ConfigureAwait(false);
+
+            return this.PartialView("ProjectSearch", projects);
+        }
+
+        /// <summary>
+        ///     Deletes the project with the specified identifier.
+        /// </summary>
+        /// <param name="projectId">The project identifier.</param>
+        /// <returns>An <see cref="IActionResult"/> representing the search projects partial view.</returns>
+        public async Task<IActionResult> DeleteProject(int projectId)
+        {
+            this.logger.LogInformation("Entered method SearchProjects().");
+
+            if (projectId < 1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(projectId));
+            }
+
+            return this.RedirectToAction("Projects");
+            //await this.projectService.DeleteProject(projectId, this.cancellationTokenSource.Token).ConfigureAwait(false);
+
+            //return this.PartialView("ProjectSearch", projects);
+
         }
     }
 }

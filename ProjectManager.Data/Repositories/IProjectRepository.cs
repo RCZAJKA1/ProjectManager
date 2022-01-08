@@ -16,8 +16,17 @@
         /// </summary>
         /// <param name="userId">The user identifier.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>All projects tied to the specified user.</returns>
+        /// <returns>An <see cref="IEnumerable{T}"/> containing the projects tied to the specified user.</returns>
         Task<IEnumerable<Project>> GetProjectsForUserAsync(int userId, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        ///     Searches for projects using the specified criteria.
+        /// </summary>
+        /// <param name="userId">The user identifier.</param>
+        /// <param name="projectName">The project name.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>An <see cref="IList{T}"/> containing the projects that meet the specified criteria.</returns>
+        Task<IList<Project>> SearchProjectsAsync(int userId, string projectName, CancellationToken cancellationToken = default);
 
         /// <summary>
         ///     Adds the specified project to the database.
