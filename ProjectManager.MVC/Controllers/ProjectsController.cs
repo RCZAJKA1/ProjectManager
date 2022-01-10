@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -123,7 +124,7 @@
         /// </summary>
         /// <param name="projectId">The project identifier.</param>
         /// <returns>An <see cref="IActionResult"/> representing the search projects partial view.</returns>
-        public async Task<IActionResult> DeleteProject(int projectId)//, IEnumerable<Project> projects)
+        public async Task<IActionResult> DeleteProject(int projectId, ProjectSearchViewModel projectSearchViewModel)
         {
             this.logger.LogInformation("Entered method SearchProjects().");
 
@@ -134,10 +135,10 @@
 
             await this.projectService.DeleteProjectAsync(projectId, this.cancellationTokenSource.Token).ConfigureAwait(false);
 
-            //IEnumerable<Project> remainingProjects = projects.Where(x => x.Id != projectId);
+            projectSearchViewModel.Projects = projectSearchViewModel.Projects.ToList().Where(x => x.Id != projectId);
 
-            return this.PartialView("ProjectSearch");//, remainingProjects);
-
+            // TODO: fix to update projects table after deleting a project
+            return this.PartialView("ProjectSearch", projectSearchViewModel);
         }
     }
 }

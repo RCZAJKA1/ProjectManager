@@ -1,87 +1,75 @@
 ﻿@using ProjectManager.Common.Models
 @model ProjectSearchViewModel
 
-<style>
-    table {
-        font-family: arial, sans-serif;
-        border-collapse: collapse;
-        width: 100%;
-    }
-    td, th {
-        border: 1px solid #dddddd;
-        text-align: left;
-        padding: 8px;
-    }
-</style>
+<!DOCTYPE html>
 
-<style>
-    deleteButton{
-        display: -moz-inline-stack;
-        display: inline-block;
-        width: 391px;
-        height: 62px;
-        line-height: 62px;
-        vertical-align: text-middle;
-        text-align: center;
-        color: #ebe6eb;
-        font-family: Zenhei;
-        font-size: 14px;
-        font-weight: normal;
-        font-style: normal;
-        text-shadow: #222222 1px 1px 0;
-    }
-    deleteButton:hover{
-     background: #383;
-    }
-</style>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		
+		<style type="text/css">
 
-<div style="border:thin solid black">
-    <table id="projectSearchTable">
-        <tr>
-            <th>Name</th>
-            <th>Description</th>
-            <th>Owner</th>
-            <th>Status</th>
-            <th>Start</th>
-            <th>End</th>
-            <th>Due</th>
-            <th></th>
-        </tr>
-        @foreach (Project project in Model.Projects) {
+			.field-validation-error {
+				color: #ff0000;
+			}
+
+		</style>
+	</head>
+	
+	<body>
+		<div style="border:thin solid black">
+        <table id="projectSearchTable">
             <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => project.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => project.Description)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => project.Owner)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => project.Status)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => project.StartDate)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => project.EndDate)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => project.DueDate)
-                </td>
-                <td>
-                    <input type="button" value="Delete" onclick="DeleteProject(@project.Id.ToString())">
-                </td>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Owner</th>
+                <th>Status</th>
+                <th>Start</th>
+                <th>End</th>
+                <th>Due</th>
+                <th></th>
             </tr>
-        }
-    </table>
-</div>
+            @foreach (Project project in Model.Projects) {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => project.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => project.Description)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => project.Owner)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => project.Status)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => project.StartDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => project.EndDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => project.DueDate)
+                    </td>
+                    <td>
+                        <input type="button" value="Delete" onclick="DeleteProject(@project.Id.ToString())">
+                    </td>
+                </tr>
+            }
+        </table>
+        </div>
 
-<script>
-    function DeleteProject(id, model){
-        $.post("/Projects/DeleteProject", { projectId: id });
-    }
-</script>
-
-<script type="text/javascript" src="//code.jquery.com/jquery-3.6.0.js"></script>
+		<script>            
+            function DeleteProject(id){
+                $.post("/Projects/DeleteProject", 
+                    {
+                        projectId: id, 
+                        projectSearchViewModel: JSON.parse('@Html.Raw(Json.Serialize(@Model))')
+                    }
+                );
+            }
+		</script>
+	</body>
+</html>
