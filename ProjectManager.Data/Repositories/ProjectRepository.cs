@@ -392,5 +392,48 @@
 
             return projects;
         }
+
+        /// <inheritdoc/>
+        public async Task DeleteProjectAsync(int projectId, CancellationToken cancellationToken = default)
+        {
+            this.logger.LogInformation("Entered method ProjectRepository.DeleteProjectAsync().");
+
+            if (projectId < 1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(projectId));
+            }
+
+            cancellationToken.ThrowIfCancellationRequested();
+
+            try
+            {
+                using SqlConnection connection = new SqlConnection(this.connectionString);
+                using SqlCommand command = new SqlCommand
+                {
+                    Connection = connection,
+                    CommandType = CommandType.StoredProcedure,
+                    CommandText = "[dbo].[usp_DeleteProject]"
+                };
+
+                SqlParameter[] parameters = new SqlParameter[]
+                {
+                    new SqlParameter("@projectId", projectId)
+                };
+
+                command.Parameters.AddRange(parameters);
+
+                if (command.Connection.State != ConnectionState.Open)
+                {
+                    await connection.OpenAsync().ConfigureAwait(false);
+                }
+
+                await command.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false);
+            }
+            catch (SqlException ex)
+            {
+                this.logger.LogError("A SQL error occurred while deleting the project.", ex.Message);
+                throw;
+            }
+        }
     }
 }

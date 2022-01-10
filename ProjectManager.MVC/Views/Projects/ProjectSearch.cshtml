@@ -1,5 +1,18 @@
 ﻿@using ProjectManager.Common.Models
-@model IEnumerable<Project>
+@model ProjectSearchViewModel
+
+<style>
+    table {
+        font-family: arial, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
+    }
+    td, th {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+    }
+</style>
 
 <style>
     deleteButton{
@@ -19,24 +32,11 @@
     }
     deleteButton:hover{
      background: #383;
-}
+    }
 </style>
 
-<style>
-        table {
-            font-family: arial, sans-serif;
-            border-collapse: collapse;
-            width: 100%;
-        }
-        td, th {
-            border: 1px solid #dddddd;
-            text-align: left;
-            padding: 8px;
-        }
-    </style>
-
 <div style="border:thin solid black">
-    <table>
+    <table id="projectSearchTable">
         <tr>
             <th>Name</th>
             <th>Description</th>
@@ -47,7 +47,7 @@
             <th>Due</th>
             <th></th>
         </tr>
-        @foreach (Project project in Model) {
+        @foreach (Project project in Model.Projects) {
             <tr>
                 <td>
                     @Html.DisplayFor(modelItem => project.Name)
@@ -71,45 +71,17 @@
                     @Html.DisplayFor(modelItem => project.DueDate)
                 </td>
                 <td>
-                    @*<input type="button" value="Delete" onclick="DeleteProject(@project.Id, @project.Name)">*@
-                    @*<input type="button" value="Delete" onclick="location.href='@Url.Action("DeleteProject", "Projects", new {id = @project.Id, name = @project.Name})'" />*@
-                    <input type="button" value="Delete" onclick="Test()">
+                    <input type="button" value="Delete" onclick="DeleteProject(@project.Id.ToString())">
                 </td>
             </tr>
         }
     </table>
 </div>
 
-@functions{
-    public void DeleteProject(int id, string name)
-    {
-        @Url.Action("DeleteProject", "Projects", new {id = id, projectName = name});
+<script>
+    function DeleteProject(id, model){
+        $.post("/Projects/DeleteProject", { projectId: id });
     }
-}
+</script>
 
-<script>
-    function DeleteProject(id, name){
-        if (confirm('Are you sure you want to delete project ${name}?')){
-            $.ajax({
-                url: 'Projects/DeleteProject',
-                type: 'POST',
-                contentType: 'application/json;',
-                data: JSON.stringify({ id: id, projectName = name }),
-                success: function (valid)
-                {
-                    if(valid) {
-                        alert('Project successfully deleted.');
-                    } else { 
-                        alert('Project failed to delete.');
-                    }
-                }
-            });
-        }
-    }
-</script>
-<script>
-    function Test(){
-        alert('Project successfully deleted.');
-    )
-</script>
-<script type="text/javascript" src="//code.jquery.com/jquery-1.7.1.js"></script>
+<script type="text/javascript" src="//code.jquery.com/jquery-3.6.0.js"></script>

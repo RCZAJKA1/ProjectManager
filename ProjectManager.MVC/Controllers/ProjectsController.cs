@@ -107,12 +107,15 @@
             {
                 name = String.Empty;
             }
-
             name.EnsureOnlyLettersAndNumbers();
 
             IList<Project> projects = await this.projectService.SearchProjectsAsync(name, this.cancellationTokenSource.Token).ConfigureAwait(false);
+            ProjectSearchViewModel projectSearchViewModel = new ProjectSearchViewModel
+            {
+                Projects = projects
+            };
 
-            return this.PartialView("ProjectSearch", projects);
+            return this.PartialView("ProjectSearch", projectSearchViewModel);
         }
 
         /// <summary>
@@ -120,7 +123,7 @@
         /// </summary>
         /// <param name="projectId">The project identifier.</param>
         /// <returns>An <see cref="IActionResult"/> representing the search projects partial view.</returns>
-        public async Task<IActionResult> DeleteProject(int projectId)
+        public async Task<IActionResult> DeleteProject(int projectId)//, IEnumerable<Project> projects)
         {
             this.logger.LogInformation("Entered method SearchProjects().");
 
@@ -129,10 +132,11 @@
                 throw new ArgumentOutOfRangeException(nameof(projectId));
             }
 
-            return this.RedirectToAction("Projects");
-            //await this.projectService.DeleteProject(projectId, this.cancellationTokenSource.Token).ConfigureAwait(false);
+            await this.projectService.DeleteProjectAsync(projectId, this.cancellationTokenSource.Token).ConfigureAwait(false);
 
-            //return this.PartialView("ProjectSearch", projects);
+            //IEnumerable<Project> remainingProjects = projects.Where(x => x.Id != projectId);
+
+            return this.PartialView("ProjectSearch");//, remainingProjects);
 
         }
     }

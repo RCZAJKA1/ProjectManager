@@ -119,5 +119,16 @@
 
             return await this.projectRepository.SearchProjectsAsync(userId, name, cancellationToken).ConfigureAwait(false);
         }
+
+        /// <inheritdoc />
+        public async Task DeleteProjectAsync(int projectId, CancellationToken cancellationToken = default)
+        {
+            if (projectId < 1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(projectId));
+            }
+
+            await this.projectRepository.DeleteProjectAsync(projectId, cancellationToken).ConfigureAwait(false);
+        }
     }
 }

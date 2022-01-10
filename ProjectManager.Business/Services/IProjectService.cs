@@ -54,5 +54,13 @@
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>A <see cref="IDictionary{TKey, TValue}"/> contianing the identifiers and names of each project category.</returns>
         Task<IDictionary<int, string>> GetProjectCategoriesAsync(CancellationToken cancellationToken = default);
+
+        /// <summary>
+        ///     Deletes the project by the specified identifier.
+        /// </summary>
+        /// <param name="projectId">The project identifier.</param>
+        /// <param name="cancellationToken">The canellation token.</param>
+        /// <returns>The <see cref="Task"/> that completed deleting the project.</returns>
+        Task DeleteProjectAsync(int projectId, CancellationToken cancellationToken = default);
     }
 }

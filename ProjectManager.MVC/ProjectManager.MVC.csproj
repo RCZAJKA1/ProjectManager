@@ -14,7 +14,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ProjectManager.Business\ProjectManager.Business.csproj" />
-    <ProjectReference Include="..\ProjectManager.Common\ProjectManager.Common.csproj" />
   </ItemGroup>
 
   <ItemGroup>
