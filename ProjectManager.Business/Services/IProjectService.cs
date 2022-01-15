@@ -4,7 +4,7 @@
     using System.Threading;
     using System.Threading.Tasks;
 
-    using ProjectManager.Common.Models;
+    using ProjectManager.Data.Models;
 
     /// <summary>
     ///     Handles business operations for projects.
@@ -21,10 +21,10 @@
         /// <summary>
         ///     Searches for projects using the specified criteria.
         /// </summary>
-        /// <param name="name">The project name.</param>
+        /// <param name="project">The project.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>All projects that meet the specified criteria.</returns>
-        Task<IList<Project>> SearchProjectsAsync(string name, CancellationToken cancellationToken = default);
+        Task<IList<Project>> SearchProjectsAsync(Project project, CancellationToken cancellationToken = default);
 
         /// <summary>
         ///      Adds the specified project.
@@ -38,8 +38,8 @@
         ///     Gets all active project owners.
         /// </summary>
         /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>A <see cref="IDictionary{TKey, TValue}"/> containing the identifiers and names of each active project owner.</returns>
-        Task<IDictionary<int, string>> GetActiveProjectOwnersAsync(CancellationToken cancellationToken = default);
+        /// <returns>A <see cref="IEnumerable{T}"/> containing the identifiers and names of each active project owner.</returns>
+        Task<IEnumerable<ProjectOwner>> GetActiveProjectOwnersAsync(CancellationToken cancellationToken = default);
 
         /// <summary>
         ///     Gets all project statuses.

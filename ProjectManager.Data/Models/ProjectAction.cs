@@ -1,9 +1,9 @@
-﻿namespace ProjectManager.Business.Models
+﻿namespace ProjectManager.Data.Models
 {
     using System;
     using System.Diagnostics.CodeAnalysis;
 
-    using ProjectManager.Business.Enums;
+    using ProjectManager.Data.Enums;
 
     /// <summary>
     ///     Represents a project action.

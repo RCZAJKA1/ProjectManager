@@ -11,7 +11,7 @@
     using Moq;
 
     using ProjectManager.Business.Services;
-    using ProjectManager.Common.Models;
+    using ProjectManager.Data.Models;
     using ProjectManager.MVC.Controllers;
 
     using Xunit;

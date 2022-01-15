@@ -1,4 +1,4 @@
-﻿namespace ProjectManager.Common.Models
+﻿namespace ProjectManager.Data.Models
 {
     using System;
     using System.Diagnostics.CodeAnalysis;
@@ -40,9 +40,14 @@
         public int OwnerId { get; set; }
 
         /// <summary>
-        ///     Gets or sets the owner.
+        ///     Gets or sets the owner first name.
         /// </summary>
-        public string Owner { get; set; }
+        public string OwnerFirstName { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the owner last name.
+        /// </summary>
+        public string OwnerLastName { get; set; }
 
         /// <summary>
         ///     Gets or sets the category identifier.

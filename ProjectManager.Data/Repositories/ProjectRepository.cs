@@ -10,8 +10,7 @@
 
     using Microsoft.Extensions.Logging;
 
-    using ProjectManager.Common;
-    using ProjectManager.Common.Models;
+    using ProjectManager.Data.Models;
 
     /// <inheritdoc cref="IProjectRepository"/>
     public sealed class ProjectRepository : IProjectRepository
@@ -88,7 +87,8 @@
                             EndDate = reader.IsDBNull(columns[4]) ? (DateTime?)null : reader.GetDateTime(columns[4]),
                             DueDate = reader.IsDBNull(columns[5]) ? (DateTime?)null : reader.GetDateTime(columns[5]),
                             Status = reader.GetString(columns[6]),
-                            Owner = reader.GetString(columns[7])
+                            OwnerFirstName = reader.GetString(columns[7]),
+                            OwnerLastName = reader.GetString(columns[8])
                         };
 
                         projects.Add(project);
@@ -162,13 +162,13 @@
         }
 
         /// <inheritdoc/>
-        public async Task<IDictionary<int, string>> GetActiveProjectOwnersAsync(CancellationToken cancellationToken = default)
+        public async Task<IEnumerable<ProjectOwner>> GetActiveProjectOwnersAsync(CancellationToken cancellationToken = default)
         {
             this.logger.LogInformation("Entered method ProjectRepository.GetActiveProjectOwnersAsync().");
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            IDictionary<int, string> projectOwners = new Dictionary<int, string>();
+            List<ProjectOwner> projectOwners = new List<ProjectOwner>();
 
             try
             {
@@ -194,8 +194,15 @@
                         List<string> columns = Enumerable.Range(0, reader.FieldCount).Select(reader.GetName).ToList();
 
                         int ownerId = reader.GetInt32(columns[0]);
-                        string ownerName = reader.GetString(columns[1]);
-                        projectOwners.Add(ownerId, ownerName);
+                        string ownerLastName = reader.GetString(columns[1]);
+                        string ownerFirstName = reader.GetString(columns[2]);
+                        ProjectOwner projectOwner = new ProjectOwner
+                        {
+                            Id = ownerId,
+                            FirstName = ownerFirstName,
+                            LastName = ownerLastName
+                        };
+                        projectOwners.Add(projectOwner);
                     }
                     catch (Exception exception)
                     {
@@ -318,16 +325,14 @@
         }
 
         /// <inheritdoc/>
-        public async Task<IList<Project>> SearchProjectsAsync(int userId, string projectName, CancellationToken cancellationToken = default)
+        public async Task<IList<Project>> SearchProjectsForUserAsync(int userId, string projectName, CancellationToken cancellationToken = default)
         {
-            this.logger.LogInformation("Entered method ProjectRepository.SearchProjectsAsync().");
+            this.logger.LogInformation("Entered method ProjectRepository.SearchProjectsForUserAsync().");
 
             if (userId < 1)
             {
                 throw new ArgumentOutOfRangeException(nameof(userId));
             }
-
-            projectName.ThrowIfNull();
 
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -339,13 +344,13 @@
                 {
                     Connection = connection,
                     CommandType = CommandType.StoredProcedure,
-                    CommandText = "[dbo].[usp_SearchProjects]"
+                    CommandText = "[dbo].[usp_SearchProjectsForOwner]"
                 };
 
                 SqlParameter[] parameters = new SqlParameter[]
                 {
-                    new SqlParameter("@userId", userId),
-                    new SqlParameter("@projectName", projectName)
+                    new SqlParameter("@ownerId", userId),
+                    new SqlParameter("@name", projectName)
                 };
 
                 command.Parameters.AddRange(parameters);
@@ -367,12 +372,13 @@
                         {
                             Id = reader.GetInt32(columns[0]),
                             Name = reader.GetString(columns[1]),
-                            Description = reader.GetString(columns[2]),
+                            Description = reader.IsDBNull(columns[2]) ? null : reader.GetString(columns[2]),
                             StartDate = reader.IsDBNull(columns[3]) ? (DateTime?)null : reader.GetDateTime(columns[3]),
                             EndDate = reader.IsDBNull(columns[4]) ? (DateTime?)null : reader.GetDateTime(columns[4]),
                             DueDate = reader.IsDBNull(columns[5]) ? (DateTime?)null : reader.GetDateTime(columns[5]),
-                            Status = reader.GetString(columns[6]),
-                            Owner = reader.GetString(columns[7])
+                            Status = reader.IsDBNull(columns[6]) ? null : reader.GetString(columns[6]),
+                            OwnerFirstName = reader.IsDBNull(columns[7]) ? null : reader.GetString(columns[7]),
+                            OwnerLastName = reader.IsDBNull(columns[8]) ? null : reader.GetString(columns[8])
                         };
 
                         projects.Add(project);

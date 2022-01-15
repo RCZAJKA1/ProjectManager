@@ -9,8 +9,8 @@
 
     using Moq;
 
-    using ProjectManager.Business.Models;
     using ProjectManager.Business.Services;
+    using ProjectManager.Data.Models;
     using ProjectManager.MVC.Controllers;
     using ProjectManager.MVC.Models;
 

@@ -5,7 +5,7 @@
 
     using FluentValidation;
 
-    using ProjectManager.Business.Models;
+    using ProjectManager.Data.Models;
 
     /// <summary>
     ///     The validator for the project action.

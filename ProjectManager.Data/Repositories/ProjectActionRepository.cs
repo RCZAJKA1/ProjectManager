@@ -7,7 +7,7 @@
 
     using Microsoft.Extensions.Logging;
 
-    using ProjectManager.Business.Models;
+    using ProjectManager.Data.Models;
 
     /// <inheritdoc cref="IProjectActionRepository"/>
     public sealed class ProjectActionRepository : IProjectActionRepository

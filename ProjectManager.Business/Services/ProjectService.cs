@@ -12,7 +12,7 @@
     using Microsoft.Extensions.Logging;
 
     using ProjectManager.Common;
-    using ProjectManager.Common.Models;
+    using ProjectManager.Data.Models;
     using ProjectManager.Data.Repositories;
 
     /// <inheritdoc cref="IProjectService"/>
@@ -78,7 +78,7 @@
         }
 
         /// <inheritdoc />
-        public async Task<IDictionary<int, string>> GetActiveProjectOwnersAsync(CancellationToken cancellationToken = default)
+        public async Task<IEnumerable<ProjectOwner>> GetActiveProjectOwnersAsync(CancellationToken cancellationToken = default)
         {
             this.logger.LogInformation("Entered method ProjectService.GetActiveProjectOwnersAsync().");
 
@@ -108,16 +108,25 @@
         }
 
         /// <inheritdoc />
-        public async Task<IList<Project>> SearchProjectsAsync(string name, CancellationToken cancellationToken = default)
+        public async Task<IList<Project>> SearchProjectsAsync(Project project, CancellationToken cancellationToken = default)
         {
             this.logger.LogInformation("Entered method ProjectService.SearchProjectsAsync().");
 
-            name.ThrowIfNull();
+            if (project == null)
+            {
+                throw new ArgumentNullException(nameof(project));
+            }
+
+            ValidationResult validationResult = await this.validator.ValidateAsync(project).ConfigureAwait(false);
+            if (!validationResult.IsValid)
+            {
+                throw new ValidationException("The Project failed validation.", validationResult.Errors);
+            }
 
             // TODO: obtain user id from system
             int userId = 2;
 
-            return await this.projectRepository.SearchProjectsAsync(userId, name, cancellationToken).ConfigureAwait(false);
+            return await this.projectRepository.SearchProjectsForUserAsync(userId, project.Name, cancellationToken).ConfigureAwait(false);
         }
 
         /// <inheritdoc />

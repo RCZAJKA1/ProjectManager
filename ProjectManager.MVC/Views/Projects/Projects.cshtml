@@ -1,4 +1,5 @@
-﻿@model ProjectManager.MVC.Models.ProjectViewModel
+﻿@using ProjectManager.Data.Models;
+@model ProjectManager.MVC.Models.ProjectViewModel
 @{
     ViewData["Title"] = "Projects";
 }
@@ -44,9 +45,9 @@
                         <td>
                             <div style:"width:200px;">
                                 <select id="ownerId" name="OwnerId">
-                                    @foreach(KeyValuePair<int, string> owner in Model.Owners)
+                                    @foreach(ProjectOwner owner in Model.Owners)
                                     {
-                                        <option value="@owner.Key">@owner.Value</option>
+                                        <option value="@owner.Id">@owner.LastName, @owner.FirstName</option>
                                     }
                                 </select>
                             </div>
@@ -111,8 +112,15 @@
          <table>
             <tr>
                 <td><input type="submit" value="Search"/></td>
-                <td>Name: </td>
-                <td><input id="name" type="text" name="Name"/></td>
+                <td>Name: <input id="name" type="text" name="Name"/></td>
+                <td>Owner: <select id="ownerId" name="OwnerId">
+                                    <option value="0"></option>
+                                    @foreach(ProjectOwner owner in Model.Owners)
+                                    {
+                                        <option value="@owner.Id">@owner.LastName, @owner.FirstName</option>
+                                    }
+                            </select>
+                </td>
             </tr>
         </table>
         <div id="projectsTable" style="overflow-y:scroll">

@@ -2,7 +2,7 @@
 {
     using System.Collections.Generic;
 
-    using ProjectManager.Common.Models;
+    using ProjectManager.Data.Models;
 
     /// <summary>
     ///     Represents the project search view model.

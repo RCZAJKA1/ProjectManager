@@ -10,8 +10,7 @@
     using Microsoft.Extensions.Logging;
 
     using ProjectManager.Business.Services;
-    using ProjectManager.Common;
-    using ProjectManager.Common.Models;
+    using ProjectManager.Data.Models;
     using ProjectManager.MVC.Models;
 
     /// <summary>
@@ -99,18 +98,24 @@
         /// </summary>
         /// <param name="name">The project name.</param>
         /// <returns>An <see cref="IActionResult"/> representing the search projects partial view.</returns>
-        public async Task<IActionResult> SearchProjects(string name)
+        public async Task<IActionResult> SearchProjects(Project project)
         {
             this.logger.LogInformation("Entered method SearchProjects().");
 
-            // Empty excludes filter
-            if (name == null)
+            if (project == null)
             {
-                name = String.Empty;
+                throw new ArgumentNullException(nameof(project));
             }
-            name.EnsureOnlyLettersAndNumbers();
 
-            IList<Project> projects = await this.projectService.SearchProjectsAsync(name, this.cancellationTokenSource.Token).ConfigureAwait(false);
+            if (!this.ModelState.IsValid)
+            {
+                this.logger.LogError("Model state invalid.");
+
+                return new EmptyResult();
+            }
+
+            IList<Project> projects = await this.projectService.SearchProjectsAsync(project, this.cancellationTokenSource.Token).ConfigureAwait(false);
+
             ProjectSearchViewModel projectSearchViewModel = new ProjectSearchViewModel
             {
                 Projects = projects

@@ -1,4 +1,4 @@
-﻿@using ProjectManager.Common.Models
+﻿@using ProjectManager.Data.Models
 @model ProjectSearchViewModel
 
 <!DOCTYPE html>
@@ -6,17 +6,13 @@
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		
+		<meta name="viewport" content="width=device-width, initial-scale=1">		
 		<style type="text/css">
-
 			.field-validation-error {
 				color: #ff0000;
 			}
-
 		</style>
-	</head>
-	
+	</head>	
 	<body>
 		<div style="border:thin solid black">
         <table id="projectSearchTable">
@@ -39,7 +35,7 @@
                         @Html.DisplayFor(modelItem => project.Description)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => project.Owner)
+                        @Html.DisplayFor(modelItem => project.OwnerLastName)
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => project.Status)

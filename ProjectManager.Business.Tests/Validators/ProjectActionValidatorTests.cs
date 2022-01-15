@@ -8,9 +8,9 @@
 
     using Moq;
 
-    using ProjectManager.Business.Enums;
-    using ProjectManager.Business.Models;
     using ProjectManager.Business.Validators;
+    using ProjectManager.Data.Enums;
+    using ProjectManager.Data.Models;
 
     using Xunit;
 

@@ -12,10 +12,9 @@ namespace ProjectManager.MVC
     using Microsoft.Extensions.Hosting;
     using Microsoft.Extensions.Logging;
 
-    using ProjectManager.Business.Models;
     using ProjectManager.Business.Services;
     using ProjectManager.Business.Validators;
-    using ProjectManager.Common.Models;
+    using ProjectManager.Data.Models;
     using ProjectManager.Data.Repositories;
 
     /// <summary>
@@ -46,14 +45,13 @@ namespace ProjectManager.MVC
         {
             services.AddControllersWithViews();
 
-            services.AddTransient<IProjectService, ProjectService>();
-            services.AddTransient<IProjectActionService, ProjectActionService>();
-
-            services.AddTransient<IProjectRepository, ProjectRepository>();
-            services.AddTransient<IProjectActionRepository, ProjectActionRepository>();
-
-            services.AddTransient<IValidator<Project>, ProjectValidator>();
-            services.AddTransient<IValidator<ProjectAction>, ProjectActionValidator>();
+            services
+                .AddTransient<IProjectService, ProjectService>()
+                .AddTransient<IProjectActionService, ProjectActionService>()
+                .AddTransient<IProjectRepository, ProjectRepository>()
+                .AddTransient<IProjectActionRepository, ProjectActionRepository>()
+                .AddTransient<IValidator<Project>, ProjectValidator>()
+                .AddTransient<IValidator<ProjectAction>, ProjectActionValidator>();
         }
 
         /// <summary>

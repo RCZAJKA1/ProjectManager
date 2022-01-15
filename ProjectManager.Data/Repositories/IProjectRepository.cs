@@ -4,7 +4,7 @@
     using System.Threading;
     using System.Threading.Tasks;
 
-    using ProjectManager.Common.Models;
+    using ProjectManager.Data.Models;
 
     /// <summary>
     ///     Handles data operations for project actions.
@@ -26,7 +26,8 @@
         /// <param name="projectName">The project name.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>An <see cref="IList{T}"/> containing the projects that meet the specified criteria.</returns>
-        Task<IList<Project>> SearchProjectsAsync(int userId, string projectName, CancellationToken cancellationToken = default);
+        // TODO: Modify sproc to support parameter Project
+        Task<IList<Project>> SearchProjectsForUserAsync(int userId, string projectName, CancellationToken cancellationToken = default);
 
         /// <summary>
         ///     Adds the specified project to the database.
@@ -40,8 +41,8 @@
         ///     Gets all active project owners.
         /// </summary>
         /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>A <see cref="IDictionary{TKey, TValue}"/> contianing the identifiers and names of each project owner.</returns>
-        Task<IDictionary<int, string>> GetActiveProjectOwnersAsync(CancellationToken cancellationToken = default);
+        /// <returns>A <see cref="IEnumerable{T}"/> contianing the identifiers and names of each project owner.</returns>
+        Task<IEnumerable<ProjectOwner>> GetActiveProjectOwnersAsync(CancellationToken cancellationToken = default);
 
         /// <summary>
         ///     Gets all available project statuses.
