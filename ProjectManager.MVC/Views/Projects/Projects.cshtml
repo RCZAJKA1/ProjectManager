@@ -114,7 +114,6 @@
                 <td><input type="submit" value="Search"/></td>
                 <td>Name: <input id="name" type="text" name="Name"/></td>
                 <td>Owner: <select id="ownerId" name="OwnerId">
-                                    <option value="0"></option>
                                     @foreach(ProjectOwner owner in Model.Owners)
                                     {
                                         <option value="@owner.Id">@owner.LastName, @owner.FirstName</option>
@@ -123,7 +122,7 @@
                 </td>
             </tr>
         </table>
-        <div id="projectsTable" style="overflow-y:scroll">
+        <div id="projectsTable">
             @*Placeholder for project search table*@
         </div>
     </form>

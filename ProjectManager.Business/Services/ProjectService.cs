@@ -123,10 +123,7 @@
                 throw new ValidationException("The Project failed validation.", validationResult.Errors);
             }
 
-            // TODO: obtain user id from system
-            int userId = 2;
-
-            return await this.projectRepository.SearchProjectsForUserAsync(userId, project.Name, cancellationToken).ConfigureAwait(false);
+            return await this.projectRepository.SearchProjectsForUserAsync(project.OwnerId, project.Name, cancellationToken).ConfigureAwait(false);
         }
 
         /// <inheritdoc />

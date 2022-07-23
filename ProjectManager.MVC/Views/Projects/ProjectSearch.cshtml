@@ -2,7 +2,6 @@
 @model ProjectSearchViewModel
 
 <!DOCTYPE html>
-
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
@@ -11,22 +10,44 @@
 			.field-validation-error {
 				color: #ff0000;
 			}
+            .tableFixHead {
+                overflow-y: auto;
+                height: 106px;
+            }
+            .tableFixHead thead th {
+                position: sticky;
+                top: 0;
+            }
+            table {
+                border-collapse: collapse;
+                width: 100%;
+            }
+            th, td {
+                padding: 8px 16px;
+                border: 1px solid #ccc;
+            }
+            th {
+                background: #eee;
+            }
 		</style>
 	</head>	
 	<body>
-		<div style="border:thin solid black">
+		<div class="tableFixHead" style="border:thin solid black">
         <table id="projectSearchTable">
-            <tr>
-                <th>Name</th>
-                <th>Description</th>
-                <th>Owner</th>
-                <th>Status</th>
-                <th>Start</th>
-                <th>End</th>
-                <th>Due</th>
-                <th></th>
-            </tr>
-            @foreach (Project project in Model.Projects) {
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Owner</th>
+                    <th>Status</th>
+                    <th>Start</th>
+                    <th>End</th>
+                    <th>Due</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (Project project in Model.Projects) {
                 <tr>
                     <td>
                         @Html.DisplayFor(modelItem => project.Name)
@@ -54,6 +75,7 @@
                     </td>
                 </tr>
             }
+            </tbody>
         </table>
         </div>
 

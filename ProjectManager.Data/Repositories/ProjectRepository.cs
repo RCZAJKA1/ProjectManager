@@ -37,8 +37,6 @@
         /// <inheritdoc/>
         public async Task<IEnumerable<Project>> GetProjectsForUserAsync(int userId, CancellationToken cancellationToken = default)
         {
-            this.logger.LogInformation("Entered method ProjectRepository.GetProjectsForUserAsync().");
-
             if (userId < 1)
             {
                 throw new ArgumentOutOfRangeException(nameof(userId));
@@ -55,7 +53,7 @@
                 {
                     Connection = connection,
                     CommandType = CommandType.StoredProcedure,
-                    CommandText = "[dbo].[usp_GetAllProjectsForUser]"
+                    CommandText = StoredProcedures.GetAllProjectsForUser
                 };
 
                 SqlParameter[] parameters = new SqlParameter[]
@@ -92,6 +90,8 @@
                         };
 
                         projects.Add(project);
+
+                        this.logger.LogInformation($"Project {project.Id} returned from the database.");
                     }
                     catch (Exception exception)
                     {
@@ -128,7 +128,7 @@
                 {
                     Connection = connection,
                     CommandType = CommandType.StoredProcedure,
-                    CommandText = "[dbo].[usp_InsertProject]"
+                    CommandText = StoredProcedures.InsertProject
                 };
 
                 SqlParameter[] parameters = new SqlParameter[]
@@ -329,11 +329,6 @@
         {
             this.logger.LogInformation("Entered method ProjectRepository.SearchProjectsForUserAsync().");
 
-            if (userId < 1)
-            {
-                throw new ArgumentOutOfRangeException(nameof(userId));
-            }
-
             cancellationToken.ThrowIfCancellationRequested();
 
             IList<Project> projects = new List<Project>();
@@ -344,7 +339,7 @@
                 {
                     Connection = connection,
                     CommandType = CommandType.StoredProcedure,
-                    CommandText = "[dbo].[usp_SearchProjectsForOwner]"
+                    CommandText = StoredProcedures.SearchProjectsForOwner
                 };
 
                 SqlParameter[] parameters = new SqlParameter[]
