@@ -11,7 +11,6 @@ namespace ProjectManager.MVC
 	using Microsoft.Extensions.DependencyInjection;
 	using Microsoft.Extensions.Hosting;
 	using Microsoft.Extensions.Logging;
-	//using Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation;
 
 	using ProjectManager.Business.Services;
 	using ProjectManager.Business.Validators;
@@ -44,7 +43,7 @@ namespace ProjectManager.MVC
 		/// <param name="services">The services collection.</param>
 		public void ConfigureServices(IServiceCollection services)
 		{
-			services.AddControllersWithViews();//.AddRazorRuntimeCompilation();
+			services.AddControllersWithViews();
 
 			services
 				.AddTransient<IProjectService, ProjectService>()

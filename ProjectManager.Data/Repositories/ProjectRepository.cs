@@ -155,7 +155,7 @@
 						{
 							Id = reader.GetInt32(columns[0]),
 							Name = reader.GetString(columns[1]),
-							Description = reader.IsDBNull(columns[2]) ? (string)null : reader.GetString(columns[2]),
+							Description = reader.IsDBNull(columns[2]) ? null : reader.GetString(columns[2]),
 							StartDate = reader.IsDBNull(columns[3]) ? (DateTime?)null : reader.GetDateTime(columns[3]),
 							EndDate = reader.IsDBNull(columns[4]) ? (DateTime?)null : reader.GetDateTime(columns[4]),
 							DueDate = reader.IsDBNull(columns[5]) ? (DateTime?)null : reader.GetDateTime(columns[5]),

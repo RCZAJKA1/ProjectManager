@@ -139,10 +139,8 @@
 
 			await this.projectService.DeleteProjectAsync(projectId, this.cancellationTokenSource.Token).ConfigureAwait(false);
 
-			projectViewModel.Projects = await this.projectService.GetRecentActiveProjectsAsync(cancellationToken: this.cancellationTokenSource.Token).ConfigureAwait(false);
-
 			// TODO: fix to update projects table after deleting a project
-			return this.View(projectViewModel);
+			return this.RedirectToAction("Projects");
 		}
 	}
 }
