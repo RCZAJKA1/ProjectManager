@@ -128,7 +128,8 @@
 		/// </summary>
 		/// <param name="projectId">The project identifier.</param>
 		/// <returns>An <see cref="IActionResult"/> representing the search projects partial view.</returns>
-		public async Task<IActionResult> DeleteProject(int projectId, ProjectViewModel projectViewModel)
+		[HttpPost]
+		public async Task<IActionResult> DeleteProject(int projectId)
 		{
 			this.logger.LogInformation("Entered method DeleteProject().");
 

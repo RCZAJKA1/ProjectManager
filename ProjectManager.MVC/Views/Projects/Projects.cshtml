@@ -158,7 +158,7 @@
                 @foreach (Project project in Model.Projects) {
                     <tr>
                         <td>
-                            @Html.DisplayFor(modelItem => project.Name)
+                           @Html.DisplayFor(modelItem => project.Name)
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => project.Description)
@@ -179,17 +179,21 @@
                             @Html.DisplayFor(modelItem => project.DueDate)
                         </td>
                         <td>
-                            <input type="button" value="Delete" onclick="DeleteProject(@project.Id.ToString())">
+                            @using(Html.BeginForm("DeleteProject","Projects"))
+                             {
+                               <input type="hidden" name="ProjectId" value="@project.Id" />
+                               <input type="submit" value="Delete" />
+                             }
                         </td>
                     </tr>
-            }
+                }
             </tbody>
         </table>
         </div>
 
     <script>            
         function DeleteProject(id){
-            $.post("/Projects/DeleteProject", 
+            $.post("/Projects/DeleteProject",
                 {
                     projectId: id, 
                     projectViewModel: JSON.parse('@Html.Raw(Json.Serialize(@Model))')
