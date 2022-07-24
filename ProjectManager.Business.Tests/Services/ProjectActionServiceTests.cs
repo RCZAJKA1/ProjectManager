@@ -12,6 +12,7 @@
     using Moq;
 
     using ProjectManager.Business.Services;
+    using ProjectManager.Common;
     using ProjectManager.Data.Models;
     using ProjectManager.Data.Repositories;
 
@@ -79,6 +80,8 @@
         {
             CancellationToken cancellationToken = new CancellationToken(false);
 
+            this.mockLogger.SetupLog(LogLevel.Information, 0, "Entered method AddProjectActionAsync().", null);
+
             ProjectActionService service = this.CreateService();
 
             ArgumentNullException exception = await Assert.ThrowsAsync<ArgumentNullException>("projectAction", async () => await service.AddProjectActionAsync(null, cancellationToken).ConfigureAwait(false)).ConfigureAwait(false);
@@ -93,9 +96,12 @@
         {
             ProjectAction projectAction = new ProjectAction();
             CancellationToken cancellationToken = new CancellationToken(false);
+
+            this.mockLogger.SetupLog(LogLevel.Information, 0, "Entered method AddProjectActionAsync().", null);
+            this.mockLogger.SetupLog(LogLevel.Error, 0, "The action failed validation.", null);
+
             ValidationResult validationResult = new ValidationResult();
             validationResult.Errors.Add(new ValidationFailure("testProperty1", "testError1"));
-
             this.mockValidator.Setup(x => x.ValidateAsync(It.Is<ProjectAction>(y => y == projectAction), It.Is<CancellationToken>(y => y == cancellationToken))).ReturnsAsync(validationResult);
 
             ProjectActionService service = this.CreateService();
@@ -114,6 +120,7 @@
             CancellationToken cancellationToken = new CancellationToken(false);
             ValidationResult validationResult = new ValidationResult();
 
+            this.mockLogger.SetupLog(LogLevel.Information, 0, "Entered method AddProjectActionAsync().", null);
             this.mockValidator.Setup(x => x.ValidateAsync(It.Is<ProjectAction>(y => y == projectAction), It.Is<CancellationToken>(y => y == cancellationToken))).ReturnsAsync(validationResult);
             this.mockProjectActionRepository.Setup(x => x.SaveActionAsync(It.Is<ProjectAction>(y => y == projectAction), It.Is<CancellationToken>(y => y == cancellationToken))).Returns(Task.CompletedTask);
 
