@@ -2,7 +2,6 @@
 {
 	using System;
 	using System.Diagnostics.CodeAnalysis;
-	using System.Globalization;
 	using System.Threading.Tasks;
 
 	using FluentValidation.Results;
@@ -26,6 +25,7 @@
 		}
 
 		private DateTime Now => new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute, 0);
+		private DateTime MinDate => new DateTime(1900, 1, 1);
 
 		[Theory]
 		[InlineData("")]
@@ -151,7 +151,7 @@
 			Assert.NotNull(result.Errors);
 			Assert.NotEmpty(result.Errors);
 			Assert.Single(result.Errors);
-			Assert.Equal("'Date Due Value' must be greater than or equal to '1/1/1900 12:00:00 AM'.", result.Errors[0].ErrorMessage);
+			Assert.Equal($"'Date Due Value' must be greater than or equal to '{this.MinDate}'.", result.Errors[0].ErrorMessage);
 		}
 
 		[Fact]
@@ -168,7 +168,7 @@
 			Assert.NotNull(result.Errors);
 			Assert.NotEmpty(result.Errors);
 			Assert.Single(result.Errors);
-			Assert.Equal("'Date Opened Value' must be greater than or equal to '1/1/1900 12:00:00 AM'.", result.Errors[0].ErrorMessage);
+			Assert.Equal($"'Date Opened Value' must be greater than or equal to '{this.MinDate}'.", result.Errors[0].ErrorMessage);
 		}
 
 		[Fact]
@@ -177,7 +177,7 @@
 			ProjectAction projectAction = this.CreateProjectAction();
 			projectAction.DateOpened = new DateTime(3000, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 			projectAction.DateClosed = projectAction.DateOpened.Value.AddDays(1);
-			DateTime now = DateTime.Now;
+			DateTime now = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute, 0);
 
 			ProjectActionValidator validator = this.CreateProjectActionValidator();
 
@@ -187,8 +187,8 @@
 			Assert.NotNull(result.Errors);
 			Assert.NotEmpty(result.Errors);
 			Assert.Equal(2, result.Errors.Count);
-			Assert.Equal($"'Date Opened Value' must be less than or equal to '{now.Month}/{now.Day}/{now.Year} {now:hh}:{now.Minute}:00 {now.ToString("tt", CultureInfo.InvariantCulture)}'.", result.Errors[0].ErrorMessage);
-			Assert.Equal($"'Date Closed Value' must be less than or equal to '{now.Month}/{now.Day}/{now.Year} {now:hh}:{now.Minute}:00 {now.ToString("tt", CultureInfo.InvariantCulture)}'.", result.Errors[1].ErrorMessage);
+			Assert.Equal($"'Date Opened Value' must be less than or equal to '{now}'.", result.Errors[0].ErrorMessage);
+			Assert.Equal($"'Date Closed Value' must be less than or equal to '{now}'.", result.Errors[1].ErrorMessage);
 		}
 
 		[Fact]
