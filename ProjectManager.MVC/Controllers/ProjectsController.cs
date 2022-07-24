@@ -1,7 +1,6 @@
 ﻿namespace ProjectManager.MVC.Controllers
 {
 	using System;
-	using System.Collections.Generic;
 	using System.Threading;
 	using System.Threading.Tasks;
 
@@ -113,14 +112,17 @@
 				return new EmptyResult();
 			}
 
-			IList<Project> projects = await this.projectService.SearchProjectsAsync(project, this.cancellationTokenSource.Token).ConfigureAwait(false);
-
-			ProjectSearchViewModel projectSearchViewModel = new ProjectSearchViewModel
+			ProjectViewModel projectViewModel = new ProjectViewModel
 			{
-				Projects = projects
+				Projects = await this.projectService.SearchProjectsAsync(project, this.cancellationTokenSource.Token).ConfigureAwait(false),
+				Owners = await this.projectService.GetActiveProjectOwnersAsync(this.cancellationTokenSource.Token).ConfigureAwait(false),
+				Statuses = await this.projectService.GetProjectStatusesAsync(this.cancellationTokenSource.Token).ConfigureAwait(false),
+				Categories = await this.projectService.GetProjectCategoriesAsync(this.cancellationTokenSource.Token).ConfigureAwait(false)
 			};
 
-			return this.PartialView("ProjectSearch", projectSearchViewModel);
+			// TODO: Fix reloading projects page
+
+			return this.RedirectToAction("Projects", "Projects", projectViewModel);
 		}
 
 		/// <summary>
@@ -140,7 +142,6 @@
 
 			await this.projectService.DeleteProjectAsync(projectId, this.cancellationTokenSource.Token).ConfigureAwait(false);
 
-			// TODO: fix to update projects table after deleting a project
 			return this.RedirectToAction("Projects");
 		}
 	}
