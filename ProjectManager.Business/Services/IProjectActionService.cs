@@ -3,7 +3,7 @@
     using System.Threading;
     using System.Threading.Tasks;
 
-    using ProjectManager.Business.Models;
+    using ProjectManager.Data.Models;
 
     /// <summary>
     ///     Handles business operations for project actions.

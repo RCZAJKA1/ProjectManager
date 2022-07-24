@@ -1,4 +1,5 @@
-﻿@model ProjectManager.MVC.Models.ProjectViewModel
+﻿@using ProjectManager.Data.Models;
+@model ProjectManager.MVC.Models.ProjectViewModel
 @{
     ViewData["Title"] = "Projects";
 }
@@ -19,46 +20,73 @@
             text-align: left;
             padding: 8px;
         }
-        tr:nth-child(even) {
-            background-color: #dddddd;
-        }
     </style>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" />
 </head>
 
-<body> 
+<body>
     <div class="text-center">
         <h1 class="display-4">Projects</h1>
     </div>
-     <div>
-        <form method="post" enctype="multipart/form-data" asp-controller="Projects" asp-action="AddProject">
-            <table>
-                <tr>
-                    <td>Name: </td>
-                    <td><input type="text" id="name" name="Name"/></td>
-                </tr>
+   @* <div class="panel panel-primary">  
+        <div class="panel-heading">  
+            <h3 class="panel-title">Please enter the details below.</h3>  
+        </div>  
+        <div class="panel-body">  
+            <div class="form-group col-md-5">  
+                <label>Student Name</label>  
+                <input type="text" name="StudentName" id="StudentName" class="form-control" placeholder="Enter Student Name" required="" />  
+            </div>  
+            <div class="form-group col-md-5">  
+                <label>Student Address</label>  
+                <input type="text" name="StudentAddress" id="StudentAddress" class="form-control" placeholder="Enter Student Address" required="" />  
+            </div>  
+  
+            <div class="form-group col-md-1">  
+                <div style="float: right; display:inline-block;">  
+                    <input class="btn btn-primary" name="submitButton" id="btnSave" value="Save" type="button">  
+                </div>  
+            </div>  
+        </div>  
+    </div>*@
 
-                <tr>
-                    <td>Description: </td>
-                    <td><input type="text" id="description" name="Description"/></td>
-                </tr>
-
-                <tr>
-                    <td>Owner: </td>
-                        <td>
-                            <div style:"width:200px;">
-                                <select id="ownerId" name="OwnerId">
-                                    @foreach(KeyValuePair<int, string> owner in Model.Owners)
+    <h2>Search Projects:</h2>
+    <form id="formSearchProjects" asp-action="SearchProjects" method="get" data-ajax="true" data-ajax-method="get" data-ajax-update="#projectsTable" data-ajax-mode='replace' data-ajax-url="@Url.Action("SearchProjects","Projects")">
+         <table class="table table-bordered table-striped table-responsive table-hover">
+            <tr>
+                <td><input type="submit" value="Search"/></td>
+                <td>Name: <input id="name" type="text" name="Name"/></td>
+                <td>Owner: <select id="ownerId" name="OwnerId">
+                                    @foreach(ProjectOwner owner in Model.Owners)
                                     {
-                                        <option value="@owner.Key">@owner.Value</option>
+                                        <option value="@owner.Id">@owner.LastName, @owner.FirstName</option>
                                     }
-                                </select>
-                            </div>
-                        </td>
-                </tr>
+                            </select>
+                </td>
+            </tr>
+        </table>
+    </form>
 
+    <h2>Add Project:</h2>
+    <div>
+        <form method="post" enctype="multipart/form-data" asp-controller="Projects" asp-action="AddProject">
+            <table class="table table-striped table-responsive table-hover">
                 <tr>
+                    <td>Name: <input type="text" id="name" name="Name"/></td>
+
+                    <td>Description: <input type="text" id="description" name="Description"/></td>
+
+                    <td>Owner: </td>
+                    <td>
+                        <div style:"width:200px;">
+                            <select id="ownerId" name="OwnerId">
+                                @foreach(ProjectOwner owner in Model.Owners)
+                                {
+                                    <option value="@owner.Id">@owner.LastName, @owner.FirstName</option>
+                                }
+                            </select>
+                        </div>
+                    </td>
+
                     <td>Status: </td>
                     <td>
                         <div style:"width:200px;">
@@ -84,14 +112,10 @@
                             </select>
                         </div>
                     </td>
-                </tr>
 
-                <tr>
-                    <td>Date Opened: </td>
+                     <td>Date Opened: </td>
                     <td><input type="date" id="dateOpened" name="StartDate"/></td>
-                </tr>
 
-                <tr>
                     <td>Date Closed: </td>
                     <td><input type="date" id="dateClosed" name="EndDate"/></td>
                 </tr>
@@ -102,8 +126,9 @@
                 </tr>
 
                 <tr>
-                    <td></td>
-                    <td><input type="submit" value="Add"/></td>
+                    <td>
+                        <input type="submit" value="Add" />
+                    </td>
                 </tr>
 
             </table>
@@ -111,47 +136,73 @@
         </form>
     </div>
 
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-</body>
+    <h2>Projects:</h2>
+    <div>
+        <table id="projectsTable" class="table table-striped table-responsive table-hover">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Owner</th>
+                    <th>Status</th>
+                    <th>Start</th>
+                    <th>End</th>
+                    <th>Due</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (Project project in Model.Projects) {
+                    <tr>
+                        <td>
+                           @Html.DisplayFor(modelItem => project.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => project.Description)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => project.OwnerLastName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => project.Status)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => project.StartDate)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => project.EndDate)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => project.DueDate)
+                        </td>
+                        <td>
+                            @using(Html.BeginForm("DeleteProject","Projects"))
+                             {
+                               <input type="hidden" name="ProjectId" value="@project.Id" />
+                               <input type="submit" value="Delete" />
+                             }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        </div>
 
-<table>
-    <tr>
-        <th>Name</th>
-        <th>Description</th>
-        <th>Owner</th>
-        <th>Status</th>
-        <th>Start</th>
-        <th>End</th>
-        <th>Due</th>
-    </tr>
-    @foreach (var item in @Model.Projects) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-                <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-                <td>
-                @Html.DisplayFor(modelItem => item.Owner)
-            </td>
-                <td>
-                @Html.DisplayFor(modelItem => item.Status)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.StartDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.EndDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DueDate)
-            </td>
-        </tr>
-    }
-</table>
+    <script>            
+        function DeleteProject(id){
+            $.post("/Projects/DeleteProject",
+                {
+                    projectId: id, 
+                    projectViewModel: JSON.parse('@Html.Raw(Json.Serialize(@Model))')
+                }
+            );
+        }
+    </script>
+</body>
 
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+@section scripts{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-ajax-unobtrusive/3.2.6/jquery.unobtrusive-ajax.min.js"></script>
+}
 </html>

@@ -1,0 +1,93 @@
+﻿@using ProjectManager.Data.Models
+@model ProjectSearchViewModel
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">		
+		<style type="text/css">
+			.field-validation-error {
+				color: #ff0000;
+			}
+            .tableFixHead {
+                overflow-y: auto;
+                height: 106px;
+            }
+            .tableFixHead thead th {
+                position: sticky;
+                top: 0;
+            }
+            table {
+                border-collapse: collapse;
+                width: 100%;
+            }
+            th, td {
+                padding: 8px 16px;
+                border: 1px solid #ccc;
+            }
+            th {
+                background: #eee;
+            }
+		</style>
+	</head>	
+	<body>
+		<div class="tableFixHead" style="border:thin solid black">
+        <table id="projectSearchTable">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Owner</th>
+                    <th>Status</th>
+                    <th>Start</th>
+                    <th>End</th>
+                    <th>Due</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (Project project in Model.Projects) {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => project.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => project.Description)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => project.OwnerLastName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => project.Status)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => project.StartDate)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => project.EndDate)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => project.DueDate)
+                        </td>
+                        <td>
+                            <input type="button" value="Delete" onclick="DeleteProject(@project.Id.ToString())">
+                        </td>
+                    </tr>
+            }
+            </tbody>
+        </table>
+        </div>
+
+		<script>            
+            function DeleteProject(id){
+                $.post("/Projects/DeleteProject", 
+                    {
+                        projectId: id, 
+                        projectSearchViewModel: JSON.parse('@Html.Raw(Json.Serialize(@Model))')
+                    }
+                );
+            }
+		</script>
+	</body>
+</html>

@@ -10,7 +10,7 @@
 
     using Microsoft.Extensions.Logging;
 
-    using ProjectManager.Business.Models;
+    using ProjectManager.Data.Models;
     using ProjectManager.Data.Repositories;
 
     /// <inheritdoc cref="IProjectActionService">

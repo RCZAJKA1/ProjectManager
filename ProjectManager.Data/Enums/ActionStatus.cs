@@ -1,4 +1,4 @@
-﻿namespace ProjectManager.Business.Enums
+﻿namespace ProjectManager.Data.Enums
 {
     /// <summary>
     ///     Represents an action status.

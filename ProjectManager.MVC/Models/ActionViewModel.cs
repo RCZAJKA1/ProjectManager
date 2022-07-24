@@ -3,7 +3,7 @@
     using System;
     using System.Diagnostics.CodeAnalysis;
 
-    using ProjectManager.Business.Enums;
+    using ProjectManager.Data.Enums;
 
     /// <summary>
     ///     Represents the action view model.

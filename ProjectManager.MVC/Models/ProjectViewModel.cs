@@ -3,7 +3,7 @@
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
 
-    using ProjectManager.Common.Models;
+    using ProjectManager.Data.Models;
 
     /// <summary>
     ///     Represents the action view model.
@@ -17,9 +17,9 @@
         public IList<Project> Projects { get; set; }
 
         /// <summary>
-        ///     Gets or sets all available owners.
+        ///     Gets or sets all active project owners.
         /// </summary>
-        public IDictionary<int, string> Owners { get; set; }
+        public IEnumerable<ProjectOwner> Owners { get; set; }
 
         /// <summary>
         ///     Gets or sets all available statuses.

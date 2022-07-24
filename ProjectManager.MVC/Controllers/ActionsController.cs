@@ -7,8 +7,8 @@
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
 
-    using ProjectManager.Business.Models;
     using ProjectManager.Business.Services;
+    using ProjectManager.Data.Models;
     using ProjectManager.MVC.Models;
 
     /// <summary>
