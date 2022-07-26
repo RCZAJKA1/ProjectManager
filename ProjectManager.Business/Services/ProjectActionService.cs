@@ -1,72 +1,88 @@
 ﻿namespace ProjectManager.Business.Services
 {
-    using System;
-    using System.Diagnostics;
-    using System.Threading;
-    using System.Threading.Tasks;
+	using System;
+	using System.Collections.Generic;
+	using System.Diagnostics;
+	using System.Threading;
+	using System.Threading.Tasks;
 
-    using FluentValidation;
-    using FluentValidation.Results;
+	using FluentValidation;
+	using FluentValidation.Results;
 
-    using Microsoft.Extensions.Logging;
+	using Microsoft.Extensions.Logging;
 
-    using ProjectManager.Data.Models;
-    using ProjectManager.Data.Repositories;
+	using ProjectManager.Data.Models;
+	using ProjectManager.Data.Repositories;
 
-    /// <inheritdoc cref="IProjectActionService">
-    public sealed class ProjectActionService : IProjectActionService
-    {
-        /// <summary>
-        ///     The logger.
-        /// </summary>
-        private readonly ILogger<ProjectActionService> _logger;
+	/// <inheritdoc cref="IProjectActionService">
+	public sealed class ProjectActionService : IProjectActionService
+	{
+		/// <summary>
+		///     The logger.
+		/// </summary>
+		private readonly ILogger<ProjectActionService> _logger;
 
-        /// <summary>
-        ///     The project action validator.
-        /// </summary>
-        private readonly IValidator<ProjectAction> _validator;
+		/// <summary>
+		///     The project action validator.
+		/// </summary>
+		private readonly IValidator<ProjectAction> _validator;
 
-        /// <summary>
-        ///     The project action repository.
-        /// </summary>
-        private readonly IProjectActionRepository _repository;
+		/// <summary>
+		///     The project action repository.
+		/// </summary>
+		private readonly IProjectActionRepository _actionRepository;
 
-        /// <summary>
-        ///     Creates a new instance of the <see cref="ProjectActionService"/> class.
-        /// </summary>
-        /// <param name="logger">The logger.</param>
-        /// <param name="validator">The project action validator.</param>
-        /// <param name="actionsRepository">The project action repository.</param>
-        /// <exception cref="ArgumentNullException"></exception>
-        public ProjectActionService(ILogger<ProjectActionService> logger, IValidator<ProjectAction> validator, IProjectActionRepository repository)
-        {
-            this._logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            this._validator = validator ?? throw new ArgumentNullException(nameof(validator));
-            this._repository = repository ?? throw new ArgumentNullException(nameof(repository));
-        }
+		/// <summary>
+		///     Creates a new instance of the <see cref="ProjectActionService"/> class.
+		/// </summary>
+		/// <param name="logger">The logger.</param>
+		/// <param name="validator">The project action validator.</param>
+		/// <param name="repository">The project action repository.</param>
+		/// <exception cref="ArgumentNullException"></exception>
+		public ProjectActionService(ILogger<ProjectActionService> logger, IValidator<ProjectAction> validator, IProjectActionRepository repository)
+		{
+			this._logger = logger ?? throw new ArgumentNullException(nameof(logger));
+			this._validator = validator ?? throw new ArgumentNullException(nameof(validator));
+			this._actionRepository = repository ?? throw new ArgumentNullException(nameof(repository));
+		}
 
-        /// <inheritdoc/>
-        public async Task AddProjectActionAsync(ProjectAction projectAction, CancellationToken cancellationToken = default)
-        {
-            this._logger.LogInformation("Entered method AddProjectActionAsync().");
+		/// <inheritdoc/>
+		public async Task AddProjectActionAsync(ProjectAction projectAction, CancellationToken cancellationToken = default)
+		{
+			this._logger.LogInformation("Entered method AddProjectActionAsync().");
 
-            if (projectAction == null)
-            {
-                throw new ArgumentNullException(nameof(projectAction));
-            }
+			if (projectAction == null)
+			{
+				throw new ArgumentNullException(nameof(projectAction));
+			}
 
-            // TODO: convert date time timezones
+			// TODO: convert date time timezones
 
-            ValidationResult result = await this._validator.ValidateAsync(projectAction, cancellationToken).ConfigureAwait(false);
-            if (!result.IsValid)
-            {
-                this._logger.LogError("The action failed validation.", result.Errors);
-                throw new ValidationException(result.Errors);
-            }
+			ValidationResult result = await this._validator.ValidateAsync(projectAction, cancellationToken).ConfigureAwait(false);
+			if (!result.IsValid)
+			{
+				this._logger.LogError("The action failed validation.", result.Errors);
+				throw new ValidationException(result.Errors);
+			}
 
-            await this._repository.SaveActionAsync(projectAction, cancellationToken);
+			await this._actionRepository.SaveActionAsync(projectAction, cancellationToken);
 
-            Debug.WriteLine("Finished saving the action.");
-        }
-    }
+			Debug.WriteLine("Finished saving the action.");
+		}
+
+		/// <inheritdoc/>
+		public async Task<IList<ProjectAction>> GetRecentActiveActionsAsync(int actionCount = 20, CancellationToken cancellationToken = default)
+		{
+			this._logger.LogInformation("Entered method GetRecentActiveActionsAsync().");
+
+			if (actionCount < 1)
+			{
+				throw new ArgumentOutOfRangeException(nameof(actionCount));
+			}
+
+			var recentActions = await this._actionRepository.GetRecentActiveActionsAsync(int actionCount = 20, CancellationToken cancellationToken = default).ConfigureAwait(false);
+
+			return recentActions;
+		}
+	}
 }

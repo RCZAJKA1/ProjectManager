@@ -19,6 +19,11 @@
 		public static string GetRecentActiveProjects = "[dbo].[usp_GetRecentActiveProjects]";
 
 		/// <summary>
+		///     [dbo].[usp_GetRecentActiveActions]
+		/// </summary>
+		public static string GetRecentActiveActions = "[dbo].[usp_GetRecentActiveActions]";
+
+		/// <summary>
 		///     [dbo].[usp_InsertProject]
 		/// </summary>
 		public static string InsertProject = "[dbo].[usp_InsertProject]";

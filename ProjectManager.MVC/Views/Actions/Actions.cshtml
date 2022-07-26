@@ -1,4 +1,6 @@
-﻿@{
+﻿@using ProjectManager.Data.Models;
+@model ProjectManager.MVC.Models.ActionViewModel
+@{
     ViewData["Title"] = "Actions";
 }
 
@@ -7,15 +9,44 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" />
+    <style>
+        table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+        td, th {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+    </style>
 </head>
+
 <body> 
     <div class="text-center">
         <h1 class="display-4">Actions</h1>
         <h2 class="successMessage">@ViewBag.Success</h2>
     </div>
-     <div>
+
+    <h2>Search Actions:</h2>
+    <form id="formSearchActions" asp-action="SearchActions" method="get" data-ajax="true" data-ajax-method="get" data-ajax-update="#actionsTable" data-ajax-mode='replace' data-ajax-url="@Url.Action("SearchActions","Actions")">
+         <table class="table table-bordered table-striped table-responsive table-hover">
+            <tr>
+                <td><input type="submit" value="Search"/></td>
+                <td>Description: <input id="description" type="text" name="Description"/></td>
+                <td>Owner: <select id="ownerId" name="OwnerId">
+                                    @foreach(ActionOwner owner in Model.Owners)
+                                    {
+                                        <option value="@owner.Id">@owner.LastName, @owner.FirstName</option>
+                                    }
+                            </select>
+                </td>
+            </tr>
+        </table>
+    </form>
+
+     @*<div>
         <form method="post" enctype="multipart/form-data" asp-controller="Actions" asp-action="Actions">
             <table>
                 <tr>
@@ -75,6 +106,63 @@
             </table>
             <hr/>
         </form>
+    </div>*@
+
+    <h2>Actions:</h2>
+    <div>
+        <table id="actionsTable" class="table table-striped table-responsive table-hover">
+            <thead>
+                <tr>
+                    
+                    <th>Description</th>
+                    <th>Owner</th>
+                    <th>Status</th>
+                    <th>Priority</th>
+                    <th>Resolution</th>
+                    <th>Due</th>
+                    <th>Opened</th>
+                    <th>Closed</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (ProjectAction projectAction in Model.Actions) {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => projectAction.Description)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => projectAction.Owner)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => projectAction.Status)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => projectAction.Priority)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => projectAction.Resolution)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => projectAction.DateDue)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => projectAction.DateOpened)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => projectAction.DateClosed)
+                        </td>
+                        <td>
+                            @using(Html.BeginForm("DeleteAction","Actions"))
+                             {
+                               <input type="hidden" name="ActionId" value="@projectAction.Id" />
+                               <input type="submit" value="Delete" />
+                             }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
     </div>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
