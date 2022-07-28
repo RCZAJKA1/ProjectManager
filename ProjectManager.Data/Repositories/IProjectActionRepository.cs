@@ -26,5 +26,12 @@
 		/// <param name="cancellationToken">The cancellation token.</param>
 		/// <returns>A list of recent active <see cref="ProjectAction"/>.</returns>
 		Task<IList<ProjectAction>> GetRecentActiveActionsAsync(int actionCount, CancellationToken cancellationToken = default);
+
+		/// <summary>
+		///		Gets all active action owners.
+		/// </summary>
+		/// <param name="cancellationToken">The cancellation token.</param>
+		/// <returns>A <see cref="IList{T}"/> contiaining the action owners.</returns>
+		Task<IList<ActionOwner>> GetActiveActionOwnersAsync(CancellationToken cancellationToken = default);
 	}
 }

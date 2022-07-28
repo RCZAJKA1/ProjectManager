@@ -37,5 +37,10 @@
 		///     [dbo].[usp_SearchProjectsForOwner]
 		/// </summary>
 		public static string SearchProjectsForOwner = "[dbo].[usp_SearchProjectsForOwner]";
+
+		/// <summary>
+		///     [dbo].[usp_GetActiveActionOwners]
+		/// </summary>
+		public static string GetActiveActionOwners = "[dbo].[usp_GetActiveActionOwners]";
 	}
 }

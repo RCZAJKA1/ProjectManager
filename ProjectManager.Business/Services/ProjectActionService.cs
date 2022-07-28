@@ -80,9 +80,17 @@
 				throw new ArgumentOutOfRangeException(nameof(actionCount));
 			}
 
-			var recentActions = await this._actionRepository.GetRecentActiveActionsAsync(int actionCount = 20, CancellationToken cancellationToken = default).ConfigureAwait(false);
+			IList<ProjectAction> recentActions = await this._actionRepository.GetRecentActiveActionsAsync(actionCount, cancellationToken).ConfigureAwait(false);
 
 			return recentActions;
+		}
+
+		/// <inheritdoc/>
+		public async Task<IList<ActionOwner>> GetActiveActionOwnersAsync(CancellationToken cancellationToken = default)
+		{
+			this._logger.LogInformation("Entered method GetActiveActionOwnersAsync().");
+
+			return await this._actionRepository.GetActiveActionOwnersAsync(cancellationToken).ConfigureAwait(false);
 		}
 	}
 }

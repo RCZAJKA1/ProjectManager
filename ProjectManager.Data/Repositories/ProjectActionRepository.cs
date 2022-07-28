@@ -164,5 +164,62 @@
 
 			return actions;
 		}
+
+		/// <inheritdoc/>
+		public async Task<IList<ActionOwner>> GetActiveActionOwnersAsync(CancellationToken cancellationToken = default)
+		{
+			cancellationToken.ThrowIfCancellationRequested();
+
+			IList<ActionOwner> actionOwners = new List<ActionOwner>();
+
+			try
+			{
+				using SqlConnection connection = new SqlConnection(this._connectionString);
+				using SqlCommand command = new SqlCommand
+				{
+					Connection = connection,
+					CommandType = CommandType.StoredProcedure,
+					CommandText = StoredProcedures.GetActiveActionOwners
+				};
+
+				if (command.Connection.State != ConnectionState.Open)
+				{
+					await connection.OpenAsync().ConfigureAwait(false);
+				}
+
+				using SqlDataReader reader = await command.ExecuteReaderAsync(cancellationToken).ConfigureAwait(false);
+
+				while (await reader.ReadAsync(cancellationToken).ConfigureAwait(false))
+				{
+					try
+					{
+						List<string> columns = Enumerable.Range(0, reader.FieldCount).Select(reader.GetName).ToList();
+
+						ActionOwner actionOwner = new ActionOwner
+						{
+							Id = reader.GetInt32(columns[0]),
+							FirstName = reader.GetString(columns[1]),
+							LastName = reader.GetString(columns[2])
+						};
+
+						actionOwners.Add(actionOwner);
+
+						this._logger.LogInformation($"Action owner {actionOwner.Id} returned from the database.");
+					}
+					catch (Exception exception)
+					{
+						this._logger.LogError($"An error occurred while parsing the sql data reader values: {exception.Message}");
+						throw;
+					}
+				}
+			}
+			catch (SqlException ex)
+			{
+				this._logger.LogError("A SQL error occurred while getting projects for user.", ex.Message);
+				throw;
+			}
+
+			return actionOwners;
+		}
 	}
 }

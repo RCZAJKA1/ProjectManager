@@ -132,7 +132,7 @@
                             @Html.DisplayFor(modelItem => projectAction.Description)
                         </td>
                         <td>
-                            @Html.DisplayFor(modelItem => projectAction.Owner)
+                            @Html.DisplayFor(modelItem => $"{projectAction.OwnerLastName}, {projectAction.OwnerFirstName}")
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => projectAction.Status)

@@ -55,11 +55,10 @@
 			ActionViewModel actionViewModel = new ActionViewModel
 			{
 				Actions = await this._projectActionService.GetRecentActiveActionsAsync(cancellationToken: this._cancellationTokenSource.Token).ConfigureAwait(false),
-				Owners = await this._projectActionService.GetActiveActionOwnersAsync(this._cancellationTokenSource.Token).ConfigureAwait(false),
-				Statuses = await this._projectActionService.GetActionStatusesAsync(this._cancellationTokenSource.Token).ConfigureAwait(false),
+				Owners = await this._projectActionService.GetActiveActionOwnersAsync(this._cancellationTokenSource.Token).ConfigureAwait(false)
 			};
 
-			return this.View();
+			return this.View(actionViewModel);
 		}
 
 		/// <summary>
@@ -69,35 +68,35 @@
 		[HttpPost]
 		public async Task<IActionResult> Actions(ProjectAction projectAction)
 		{
-			this._logger.LogInformation("Entered POST method Acions().");
+			//this._logger.LogInformation("Entered POST method Acions().");
 
-			if (projectAction == null)
-			{
-				throw new ArgumentNullException(nameof(projectAction));
-			}
+			//if (projectAction == null)
+			//{
+			//	throw new ArgumentNullException(nameof(projectAction));
+			//}
 
-			if (!this.ModelState.IsValid)
-			{
-				this._logger.LogInformation("The model state is invalid. Redirecting back to Actions.");
+			//if (!this.ModelState.IsValid)
+			//{
+			//	this._logger.LogInformation("The model state is invalid. Redirecting back to Actions.");
 
-				return this.RedirectToAction("Actions");
-			}
+			//	return this.RedirectToAction("Actions");
+			//}
 
-			ProjectAction action = new ProjectAction
-			{
-				DateOpened = projectAction.DateOpened,
-				DateClosed = projectAction.DateClosed,
-				DateDue = projectAction.DateDue,
-				Owner = projectAction.Owner,
-				Description = projectAction.Description,
-				Priority = projectAction.Priority,
-				Resolution = projectAction.Resolution,
-				Status = projectAction.Status
-			};
+			//ProjectAction action = new ProjectAction
+			//{
+			//	DateOpened = projectAction.DateOpened,
+			//	DateClosed = projectAction.DateClosed,
+			//	DateDue = projectAction.DateDue,
+			//	Owner = projectAction.Owner,
+			//	Description = projectAction.Description,
+			//	Priority = projectAction.Priority,
+			//	Resolution = projectAction.Resolution,
+			//	Status = projectAction.Status
+			//};
 
-			await this._projectActionService.AddProjectActionAsync(action, this._cancellationTokenSource.Token).ConfigureAwait(false);
+			//await this._projectActionService.AddProjectActionAsync(action, this._cancellationTokenSource.Token).ConfigureAwait(false);
 
-			this.ViewBag.Success = $"Added action {projectAction.Description}";
+			//this.ViewBag.Success = $"Added action {projectAction.Description}";
 
 			return this.View();
 		}
