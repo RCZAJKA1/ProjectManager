@@ -1,6 +1,7 @@
 ﻿namespace ProjectManager.MVC.Controllers
 {
 	using System;
+	using System.Collections.Generic;
 	using System.Threading;
 	using System.Threading.Tasks;
 
@@ -27,6 +28,11 @@
 		private readonly IProjectActionService _projectActionService;
 
 		/// <summary>
+		///     The project service.
+		/// </summary>
+		private readonly IProjectService _projectService;
+
+		/// <summary>
 		///     THe cancellation token source.
 		/// </summary>
 		private readonly CancellationTokenSource _cancellationTokenSource;
@@ -36,10 +42,11 @@
 		/// </summary>
 		/// <param name="logger">The logger.</param>
 		/// <exception cref="ArgumentNullException"></exception>
-		public ActionsController(ILogger<ActionsController> logger, IProjectActionService actionsService)
+		public ActionsController(ILogger<ActionsController> logger, IProjectActionService actionsService, IProjectService projectService)
 		{
 			this._logger = logger ?? throw new ArgumentNullException(nameof(logger));
 			this._projectActionService = actionsService ?? throw new ArgumentNullException(nameof(actionsService));
+			this._projectService = projectService ?? throw new ArgumentNullException(nameof(projectService));
 			this._cancellationTokenSource = new CancellationTokenSource();
 		}
 
@@ -59,6 +66,15 @@
 				Statuses = await this._projectActionService.GetActionStatusesAsync(this._cancellationTokenSource.Token).ConfigureAwait(false),
 				Priorities = await this._projectActionService.GetActionPrioritiesAsync(this._cancellationTokenSource.Token).ConfigureAwait(false)
 			};
+
+			// TODO: create new proc/query to get all active projects
+			IList<Project> activeProjects = await this._projectService.GetRecentActiveProjectsAsync(int.MaxValue, cancellationToken: this._cancellationTokenSource.Token).ConfigureAwait(false);
+			IDictionary<int, string> projects = new Dictionary<int, string>(activeProjects.Count);
+			foreach (Project p in activeProjects)
+			{
+				projects.Add(p.Id, p.Name);
+			}
+			actionViewModel.Projects = projects;
 
 			return this.View(actionViewModel);
 		}

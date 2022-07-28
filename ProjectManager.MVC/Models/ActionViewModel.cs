@@ -30,5 +30,10 @@
 		///		Gets or sets the action priorities.
 		/// </summary>
 		public IDictionary<int, string> Priorities { get; set; }
+
+		/// <summary>
+		///		Gets or sets the projects.
+		/// </summary>
+		public IDictionary<int, string> Projects { get; set; }
 	}
 }

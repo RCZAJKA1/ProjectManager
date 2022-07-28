@@ -71,7 +71,7 @@
                     <td>Status: </td>
                     <td>
                        <div style:"width:200px;">
-                            <select id="statusId" name="StatusId">
+                            <select id="status" name="Status">
                                 @foreach(KeyValuePair<int, string> status in Model.Statuses)
                                 {
                                     <option value="@status.Key">@status.Value</option>
@@ -111,9 +111,9 @@
                     <td>
                        <div style:"width:200px;">
                             <select id="projectId" name="ProjectId">
-                                @foreach(KeyValuePair<int, string> status in Model.Statuses)
+                                @foreach(KeyValuePair<int, string> project in Model.Projects)
                                 {
-                                    <option value="@status.Key">@status.Value</option>
+                                    <option value="@project.Key">@project.Value</option>
                                 }
                             </select>
                         </div>

@@ -27,19 +27,19 @@
 		/// </summary>
 		public ProjectActionValidator()
 		{
-			// Required
-			this.RuleFor(x => x.OwnerFirstName).NotEmpty()
-				.DependentRules(() =>
-				{
-					this.RuleFor(x => x.OwnerFirstName).Must(MustBeValidName).WithMessage("The Owner must only contain letters.");
-					this.RuleFor(x => x.OwnerFirstName.Length).LessThanOrEqualTo(30);
-				});
-			this.RuleFor(x => x.OwnerLastName).NotEmpty()
-				.DependentRules(() =>
-				{
-					this.RuleFor(x => x.OwnerLastName).Must(MustBeValidName).WithMessage("The Owner must only contain letters.");
-					this.RuleFor(x => x.OwnerLastName.Length).LessThanOrEqualTo(30);
-				});
+			//// Required
+			//this.RuleFor(x => x.OwnerFirstName).NotEmpty()
+			//	.DependentRules(() =>
+			//	{
+			//		this.RuleFor(x => x.OwnerFirstName).Must(MustBeValidName).WithMessage("The Owner must only contain letters.");
+			//		this.RuleFor(x => x.OwnerFirstName.Length).LessThanOrEqualTo(30);
+			//	});
+			//this.RuleFor(x => x.OwnerLastName).NotEmpty()
+			//	.DependentRules(() =>
+			//	{
+			//		this.RuleFor(x => x.OwnerLastName).Must(MustBeValidName).WithMessage("The Owner must only contain letters.");
+			//		this.RuleFor(x => x.OwnerLastName.Length).LessThanOrEqualTo(30);
+			//	});
 			this.RuleFor(x => x.Description).NotEmpty()
 				.DependentRules(() =>
 				{
@@ -69,6 +69,10 @@
 			{
 				this.RuleFor(x => new { x.DateClosed, x.DateOpened }).Must(y => MustBeGreaterThanOrEqualToDateOpened(y.DateClosed.Value, y.DateOpened.Value)).WithMessage("The DateClosed must occur on or after the DateOpened.");
 			});
+			this.RuleFor(x => x.ProjectId).NotEmpty().GreaterThan(0);
+			this.RuleFor(x => x.OwnerId).NotEmpty().GreaterThan(0);
+			this.RuleFor(x => x.Status).NotEmpty();
+			this.RuleFor(x => x.Resolution).NotEmpty().Must(MustBeAlphanumeric);
 		}
 
 		/// <summary>
@@ -91,6 +95,17 @@
 		{
 			Regex regex = new Regex(@"^[a-zA-Z\s]+$");
 			return regex.IsMatch(name);
+		}
+
+		/// <summary>
+		///     Ensures the value only contains alphanumeric characters.
+		/// </summary>
+		/// <param name="str">The string.</param>
+		/// <returns><c>true</c> if the name only contains valid alphanumeric characters, otherwise <c>false</c>.</returns>
+		private static bool MustBeAlphanumeric(string str)
+		{
+			Regex regex = new Regex(@"^[a-zA-Z0-9\s]+$");
+			return regex.IsMatch(str);
 		}
 	}
 }
