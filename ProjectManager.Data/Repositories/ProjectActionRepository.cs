@@ -147,7 +147,7 @@
 
 						actions.Add(action);
 
-						this._logger.LogInformation($"Action {action.Id} returned from the database.");
+						this._logger.LogDebug($"Action {action.Id} returned from the database.");
 					}
 					catch (Exception exception)
 					{
@@ -204,7 +204,7 @@
 
 						actionOwners.Add(actionOwner);
 
-						this._logger.LogInformation($"Action owner {actionOwner.Id} returned from the database.");
+						this._logger.LogDebug($"Action owner {actionOwner.Id} returned from the database.");
 					}
 					catch (Exception exception)
 					{
@@ -220,6 +220,110 @@
 			}
 
 			return actionOwners;
+		}
+
+		/// <inheritdoc/>
+		public async Task<IDictionary<int, string>> GetActionStatusesAsync(CancellationToken cancellationToken = default)
+		{
+			cancellationToken.ThrowIfCancellationRequested();
+
+			IDictionary<int, string> actionStatuses = new Dictionary<int, string>();
+
+			try
+			{
+				using SqlConnection connection = new SqlConnection(this._connectionString);
+				using SqlCommand command = new SqlCommand
+				{
+					Connection = connection,
+					CommandType = CommandType.StoredProcedure,
+					CommandText = StoredProcedures.GetActionStatuses
+				};
+
+				if (command.Connection.State != ConnectionState.Open)
+				{
+					await connection.OpenAsync().ConfigureAwait(false);
+				}
+
+				using SqlDataReader reader = await command.ExecuteReaderAsync(cancellationToken).ConfigureAwait(false);
+
+				while (await reader.ReadAsync(cancellationToken).ConfigureAwait(false))
+				{
+					try
+					{
+						List<string> columns = Enumerable.Range(0, reader.FieldCount).Select(reader.GetName).ToList();
+
+						int id = reader.GetInt32(columns[0]);
+						string desc = reader.GetString(columns[1]);
+						actionStatuses.Add(id, desc);
+
+						this._logger.LogDebug($"Action status {id} returned from the database.");
+					}
+					catch (Exception exception)
+					{
+						this._logger.LogError($"An error occurred while parsing the sql data reader values: {exception.Message}");
+						throw;
+					}
+				}
+			}
+			catch (SqlException ex)
+			{
+				this._logger.LogError("A SQL error occurred while getting projects for user.", ex.Message);
+				throw;
+			}
+
+			return actionStatuses;
+		}
+
+		/// <inheritdoc/>
+		public async Task<IDictionary<int, string>> GetActionPrioritiesAsync(CancellationToken cancellationToken = default)
+		{
+			cancellationToken.ThrowIfCancellationRequested();
+
+			IDictionary<int, string> actionPriorities = new Dictionary<int, string>();
+
+			try
+			{
+				using SqlConnection connection = new SqlConnection(this._connectionString);
+				using SqlCommand command = new SqlCommand
+				{
+					Connection = connection,
+					CommandType = CommandType.StoredProcedure,
+					CommandText = StoredProcedures.GetActionPriorities
+				};
+
+				if (command.Connection.State != ConnectionState.Open)
+				{
+					await connection.OpenAsync().ConfigureAwait(false);
+				}
+
+				using SqlDataReader reader = await command.ExecuteReaderAsync(cancellationToken).ConfigureAwait(false);
+
+				while (await reader.ReadAsync(cancellationToken).ConfigureAwait(false))
+				{
+					try
+					{
+						List<string> columns = Enumerable.Range(0, reader.FieldCount).Select(reader.GetName).ToList();
+
+						int id = reader.GetInt32(columns[0]);
+						string desc = reader.GetString(columns[1]);
+						actionPriorities.Add(id, desc);
+
+						this._logger.LogDebug($"Action priority {id} returned from the database.");
+					}
+					catch (Exception exception)
+					{
+						this._logger.LogError($"An error occurred while parsing the sql data reader values: {exception.Message}");
+						throw;
+					}
+				}
+			}
+			catch (SqlException ex)
+			{
+				this._logger.LogError("A SQL error occurred while getting projects for user.", ex.Message);
+				throw;
+			}
+
+			return actionPriorities;
 		}
 	}
 }

@@ -25,5 +25,10 @@
 		///     Gets or sets the action statuses.
 		/// </summary>
 		public IDictionary<int, string> Statuses { get; set; }
+
+		/// <summary>
+		///		Gets or sets the action priorities.
+		/// </summary>
+		public IDictionary<int, string> Priorities { get; set; }
 	}
 }

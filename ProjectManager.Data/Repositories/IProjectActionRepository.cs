@@ -33,5 +33,19 @@
 		/// <param name="cancellationToken">The cancellation token.</param>
 		/// <returns>A <see cref="IList{T}"/> contiaining the action owners.</returns>
 		Task<IList<ActionOwner>> GetActiveActionOwnersAsync(CancellationToken cancellationToken = default);
+
+		/// <summary>
+		///		Gets all action statuses.
+		/// </summary>
+		/// <param name="cancellationToken">The cancellation token.</param>
+		/// <returns>A dictionary of action statuses.</returns>
+		Task<IDictionary<int, string>> GetActionStatusesAsync(CancellationToken cancellationToken = default);
+
+		/// <summary>
+		///		Gets all action priorities.
+		/// </summary>
+		/// <param name="cancellationToken">The cancellation token.</param>
+		/// <returns>A dictionary of action priorities.</returns>
+		Task<IDictionary<int, string>> GetActionPrioritiesAsync(CancellationToken cancellationToken = default);
 	}
 }

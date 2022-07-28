@@ -92,5 +92,21 @@
 
 			return await this._actionRepository.GetActiveActionOwnersAsync(cancellationToken).ConfigureAwait(false);
 		}
+
+		/// <inheritdoc/>
+		public async Task<IDictionary<int, string>> GetActionStatusesAsync(CancellationToken cancellationToken = default)
+		{
+			this._logger.LogInformation("Entered method GetActionStatusesAsync().");
+
+			return await this._actionRepository.GetActionStatusesAsync(cancellationToken).ConfigureAwait(false);
+		}
+
+		/// <inheritdoc/>
+		public async Task<IDictionary<int, string>> GetActionPrioritiesAsync(CancellationToken cancellationToken = default)
+		{
+			this._logger.LogInformation("Entered method GetActionPrioritiesAsync().");
+
+			return await this._actionRepository.GetActionPrioritiesAsync(cancellationToken).ConfigureAwait(false);
+		}
 	}
 }

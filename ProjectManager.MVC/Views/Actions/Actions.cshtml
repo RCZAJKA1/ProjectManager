@@ -1,4 +1,5 @@
 ﻿@using ProjectManager.Data.Models;
+@using ProjectManager.Data.Enums;
 @model ProjectManager.MVC.Models.ActionViewModel
 @{
     ViewData["Title"] = "Actions";
@@ -46,9 +47,14 @@
         </table>
     </form>
 
-     @*<div>
-        <form method="post" enctype="multipart/form-data" asp-controller="Actions" asp-action="Actions">
+     <div>
+        <h2>Add Action:</h2>
+        <form method="post" enctype="multipart/form-data" asp-controller="Actions" asp-action="AddAction">
             <table>
+                <tr>
+                    <td>Description: </td>
+                    <td><input type="text" id="description" name="Description"/></td>
+                </tr>
                 <tr>
                     <td>Date Opened: </td>
                     <td><input type="date" id="dateOpened" name="DateOpened"/></td>
@@ -64,36 +70,54 @@
                 <tr>
                     <td>Status: </td>
                     <td>
-                        <div style:"width:200px;">
-                            <select>
-                                <option value="0">Open</option>
-                                <option value="1">Closed</option>
-                                <option value="2">InProcess</option>
-                                <option value="3">Unknown</option>
+                       <div style:"width:200px;">
+                            <select id="statusId" name="StatusId">
+                                @foreach(KeyValuePair<int, string> status in Model.Statuses)
+                                {
+                                    <option value="@status.Key">@status.Value</option>
+                                }
                             </select>
                         </div>
                     </td>
-                </tr>
-                <tr>
-                    <td>Description: </td>
-                    <td><input type="text" id="description" name="Description"/></td>
                 </tr>
                  <tr>
                     <td>Priority: </td>
                     <td>
                         <div style:"width:200px;">
-                            <select>
-                                <option value="0">Low</option>
-                                <option value="1">Medium</option>
-                                <option value="2">High</option>
-                                <option value="3">Unknown</option>
+                            <select id="priorityId" name="PriorityId">
+                                @foreach(KeyValuePair<int, string> priority in Model.Priorities)
+                                {
+                                    <option value="@priority.Key">@priority.Value</option>
+                                }
                             </select>
                         </div>
                     </td>
                 </tr>
+
+                <td>Owner: </td>
+                <td>
+                    <div style:"width:200px;">
+                        <select id="ownerId" name="OwnerId">
+                            @foreach(ActionOwner owner in Model.Owners)
+                            {
+                                <option value="@owner.Id">@owner.LastName, @owner.FirstName</option>
+                            }
+                        </select>
+                    </div>
+                </td>
+
                 <tr>
-                    <td>Owner: </td>
-                    <td><input type="text" id="owner" name="Owner"/></td>
+                    <td>Project: </td>
+                    <td>
+                       <div style:"width:200px;">
+                            <select id="projectId" name="ProjectId">
+                                @foreach(KeyValuePair<int, string> status in Model.Statuses)
+                                {
+                                    <option value="@status.Key">@status.Value</option>
+                                }
+                            </select>
+                        </div>
+                    </td>
                 </tr>
                 <tr>
                     <td>Resolution: </td>
@@ -106,7 +130,7 @@
             </table>
             <hr/>
         </form>
-    </div>*@
+    </div>
 
     <h2>Actions:</h2>
     <div>

@@ -42,5 +42,15 @@
 		///     [dbo].[usp_GetActiveActionOwners]
 		/// </summary>
 		public static string GetActiveActionOwners = "[dbo].[usp_GetActiveActionOwners]";
+
+		/// <summary>
+		///     [dbo].[usp_GetActionStatuses]
+		/// </summary>
+		public static string GetActionStatuses = "[dbo].[usp_GetActionStatuses]";
+
+		/// <summary>
+		///     [dbo].[usp_GetActionPriorities]
+		/// </summary>
+		public static string GetActionPriorities = "[dbo].[usp_GetActionPriorities]";
 	}
 }

@@ -52,7 +52,11 @@
 		/// </summary>
 		public ActionPriority Priority { get; set; }
 
-		// TODO: Combine owner into one property
+		/// <summary>
+		///     Gets or sets the owner identifier.
+		/// </summary>
+		public int OwnerId { get; set; }
+
 		/// <summary>
 		///     Gets or sets the owner first name.
 		/// </summary>
