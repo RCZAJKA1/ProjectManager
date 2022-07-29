@@ -5,8 +5,8 @@
 	/// </summary>
 	public enum ActionPriority
 	{
-		Low = 0,
-		Medium = 1,
-		High = 2
+		High = 1,
+		Medium = 2,
+		Low = 3
 	}
 }

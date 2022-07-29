@@ -52,5 +52,10 @@
 		///     [dbo].[usp_GetActionPriorities]
 		/// </summary>
 		public static string GetActionPriorities = "[dbo].[usp_GetActionPriorities]";
+
+		/// <summary>
+		///     [dbo].[usp_GetActionPriorities]
+		/// </summary>
+		public static string InsertAction = "[dbo].[usp_InsertAction]";
 	}
 }

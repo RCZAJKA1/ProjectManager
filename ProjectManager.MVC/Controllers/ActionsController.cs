@@ -106,7 +106,7 @@
 
 			this.ViewBag.Success = $"Added action {projectAction.Description}";
 
-			return this.View();
+			return this.RedirectToAction("Action");
 		}
 	}
 }

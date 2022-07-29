@@ -84,7 +84,7 @@
                     <td>Priority: </td>
                     <td>
                         <div style:"width:200px;">
-                            <select id="priorityId" name="PriorityId">
+                            <select id="priorityId" name="Priority">
                                 @foreach(KeyValuePair<int, string> priority in Model.Priorities)
                                 {
                                     <option value="@priority.Key">@priority.Value</option>
@@ -156,7 +156,9 @@
                             @Html.DisplayFor(modelItem => projectAction.Description)
                         </td>
                         <td>
-                            @Html.DisplayFor(modelItem => $"{projectAction.OwnerLastName}, {projectAction.OwnerFirstName}")
+                            <label>
+                                @projectAction.OwnerLastName, @projectAction.OwnerFirstName
+                            </label>
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => projectAction.Status)

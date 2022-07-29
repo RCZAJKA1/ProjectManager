@@ -27,52 +27,45 @@
 		/// </summary>
 		public ProjectActionValidator()
 		{
-			//// Required
-			//this.RuleFor(x => x.OwnerFirstName).NotEmpty()
-			//	.DependentRules(() =>
-			//	{
-			//		this.RuleFor(x => x.OwnerFirstName).Must(MustBeValidName).WithMessage("The Owner must only contain letters.");
-			//		this.RuleFor(x => x.OwnerFirstName.Length).LessThanOrEqualTo(30);
-			//	});
-			//this.RuleFor(x => x.OwnerLastName).NotEmpty()
-			//	.DependentRules(() =>
-			//	{
-			//		this.RuleFor(x => x.OwnerLastName).Must(MustBeValidName).WithMessage("The Owner must only contain letters.");
-			//		this.RuleFor(x => x.OwnerLastName.Length).LessThanOrEqualTo(30);
-			//	});
-			this.RuleFor(x => x.Description).NotEmpty()
-				.DependentRules(() =>
-				{
-					this.RuleFor(x => x.Description.Length).LessThanOrEqualTo(255);
-				});
-
 			// Nullable
 			this.When(x => x.Id.HasValue, () =>
 			{
 				this.RuleFor(x => x.Id.Value).GreaterThan(0);
 			});
+
+			this.When(x => !string.IsNullOrEmpty(x.Description), () =>
+			{
+				this.RuleFor(x => x.Description.Length).LessThanOrEqualTo(255);
+				this.RuleFor(x => x.Description).Must(MustBeAlphanumeric);
+			});
+
+			this.RuleFor(x => x.DateOpened.Value)
+				.NotNull()
+				.GreaterThanOrEqualTo(MinDate)
+				.LessThanOrEqualTo(CurrentDate);
+
 			this.When(x => x.DateDue.HasValue, () =>
 			{
 				this.RuleFor(x => x.DateDue.Value).GreaterThanOrEqualTo(MinDate);
 			});
-			this.When(x => x.DateOpened.HasValue, () =>
-			{
-				this.RuleFor(x => x.DateOpened.Value).GreaterThanOrEqualTo(MinDate);
-				this.RuleFor(x => x.DateOpened.Value).LessThanOrEqualTo(CurrentDate);
-			});
+
 			this.When(x => x.DateClosed.HasValue, () =>
 			{
-				this.RuleFor(x => x.DateOpened).NotEmpty().WithMessage("The DateOpened must exist if the DateClosed exists.");
-				this.RuleFor(x => x.DateClosed.Value).LessThanOrEqualTo(CurrentDate);
+				this.RuleFor(x => x.DateClosed.Value)
+					.GreaterThanOrEqualTo(x => x.DateOpened)
+					.WithMessage("The DateClosed must occur on or after the DateOpened.");
 			});
-			this.When(x => x.DateClosed.HasValue && x.DateOpened.HasValue, () =>
-			{
-				this.RuleFor(x => new { x.DateClosed, x.DateOpened }).Must(y => MustBeGreaterThanOrEqualToDateOpened(y.DateClosed.Value, y.DateOpened.Value)).WithMessage("The DateClosed must occur on or after the DateOpened.");
-			});
+
 			this.RuleFor(x => x.ProjectId).NotEmpty().GreaterThan(0);
 			this.RuleFor(x => x.OwnerId).NotEmpty().GreaterThan(0);
 			this.RuleFor(x => x.Status).NotEmpty();
-			this.RuleFor(x => x.Resolution).NotEmpty().Must(MustBeAlphanumeric);
+			this.RuleFor(x => (int)x.Priority).NotEmpty().GreaterThan(0);
+
+			this.When(x => !string.IsNullOrEmpty(x.Resolution), () =>
+			{
+				this.RuleFor(x => x.Resolution.Length).LessThanOrEqualTo(255);
+				this.RuleFor(x => x.Resolution).Must(MustBeAlphanumeric);
+			});
 		}
 
 		/// <summary>

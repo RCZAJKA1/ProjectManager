@@ -50,35 +50,35 @@
 
 			try
 			{
-				//TODO: execute stored procedure
-				await Task.FromResult(new NotImplementedException());
+				using SqlConnection connection = new SqlConnection(this._connectionString);
+				using SqlCommand command = new SqlCommand
+				{
+					Connection = connection,
+					CommandType = CommandType.StoredProcedure,
+					CommandText = StoredProcedures.InsertAction
+				};
 
-				//using SqlConnection connection = new SqlConnection(this._connectionString);
-				//using SqlCommand command = new SqlCommand
-				//{
-				//    Connection = connection,
-				//    CommandType = CommandType.StoredProcedure,
-				//    CommandText = "[dbo].[usp_InsertAction]"
-				//};
+				SqlParameter[] parameters = new SqlParameter[]
+				{
+					new SqlParameter("@dateOpened", projectAction.DateOpened),
+					new SqlParameter("@dateClosed", projectAction.DateClosed),
+					new SqlParameter("@dateDue", projectAction.DateDue),
+					new SqlParameter("@ownerId", projectAction.OwnerId),
+					new SqlParameter("@description", projectAction.Description),
+					new SqlParameter("@resolution", projectAction.Resolution),
+					new SqlParameter("@priorityId", (int)projectAction.Priority),
+					new SqlParameter("@statusId", projectAction.Status),
+					new SqlParameter("@projectId", projectAction.ProjectId)
+				};
 
-				//SqlParameter[] parameters = new SqlParameter[]
-				//{
-				//    new SqlParameter("@dateOpened", projectAction.DateOpened),
-				//    new SqlParameter("@dateClosed", projectAction.DateClosed),
-				//    new SqlParameter("@dateDue", projectAction.DateDue),
-				//    new SqlParameter("@owner", projectAction.Owner),
-				//    new SqlParameter("@description", projectAction.Description),
-				//    new SqlParameter("@resolution", projectAction.Resolution),
-				//    new SqlParameter("@priority", projectAction.Priority),
-				//    new SqlParameter("@status", projectAction.Status)
-				//};
+				command.Parameters.AddRange(parameters);
 
-				//command.Parameters.AddRange(parameters);
+				if (command.Connection.State != ConnectionState.Open)
+				{
+					await connection.OpenAsync().ConfigureAwait(false);
+				}
 
-				//if (command.Connection.State != ConnectionState.Open)
-				//{
-				//    await connection.OpenAsync().ConfigureAwait(false);
-				//}
+				await command.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false);
 			}
 			catch (SqlException ex)
 			{
