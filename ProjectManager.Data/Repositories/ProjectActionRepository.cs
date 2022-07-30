@@ -325,5 +325,85 @@
 
 			return actionPriorities;
 		}
+
+		/// <inheritdoc/>
+		public async Task<IList<ProjectAction>> SearchActionsAsync(ActionSearchOptions actionSearchOptions, CancellationToken cancellationToken = default)
+		{
+			this._logger.LogInformation("Entered method ProjectActionRepository.SearchActionsAsync().");
+
+			cancellationToken.ThrowIfCancellationRequested();
+
+			IList<ProjectAction> actions = new List<ProjectAction>();
+			try
+			{
+				using SqlConnection connection = new SqlConnection(this._connectionString);
+				using SqlCommand command = new SqlCommand
+				{
+					Connection = connection,
+					CommandType = CommandType.StoredProcedure,
+					CommandText = StoredProcedures.GetActions
+				};
+
+				SqlParameter[] parameters = new SqlParameter[]
+				{
+					// TODO: support remaining criteria
+
+					//new SqlParameter("@dateOpened", actionSearchOptions.DateOpened),
+					//new SqlParameter("@dateClosed", actionSearchOptions.DateClosed),
+					//new SqlParameter("@dateDue", actionSearchOptions.DateDue),
+					new SqlParameter("@ownerId", actionSearchOptions.OwnerId),
+					new SqlParameter("@description", actionSearchOptions.Description)
+					//new SqlParameter("@resolution", actionSearchOptions.Resolution),
+					//new SqlParameter("@priorityId", actionSearchOptions.Priority),
+					//new SqlParameter("@statusId", actionSearchOptions.Status),
+					//new SqlParameter("@projectId", actionSearchOptions.ProjectId)
+				};
+
+				command.Parameters.AddRange(parameters);
+
+				if (command.Connection.State != ConnectionState.Open)
+				{
+					await connection.OpenAsync().ConfigureAwait(false);
+				}
+
+				using SqlDataReader reader = await command.ExecuteReaderAsync(cancellationToken).ConfigureAwait(false);
+
+				while (await reader.ReadAsync(cancellationToken).ConfigureAwait(false))
+				{
+					try
+					{
+						List<string> columns = Enumerable.Range(0, reader.FieldCount).Select(reader.GetName).ToList();
+
+						ProjectAction action = new ProjectAction
+						{
+							Id = reader.GetInt32(columns[0]),
+							Description = reader.IsDBNull(columns[1]) ? null : reader.GetString(columns[1]),
+							DateOpened = reader.IsDBNull(columns[2]) ? (DateTime?)null : reader.GetDateTime(columns[2]),
+							DateClosed = reader.IsDBNull(columns[3]) ? (DateTime?)null : reader.GetDateTime(columns[3]),
+							DateDue = reader.IsDBNull(columns[4]) ? (DateTime?)null : reader.GetDateTime(columns[4]),
+							OwnerId = reader.GetInt32(columns[5]),
+							Priority = (ActionPriority)reader.GetInt32(columns[6]),
+							ProjectId = reader.GetInt32(columns[7]),
+							Resolution = reader.IsDBNull(columns[8]) ? null : reader.GetString(columns[8]),
+							Status = (ActionStatus)reader.GetInt32(columns[6])
+						};
+
+						actions.Add(action);
+					}
+					catch (Exception exception)
+					{
+						this._logger.LogError($"An error occurred while parsing the sql data reader values: {exception.Message}");
+						throw;
+					}
+				}
+			}
+			catch (SqlException ex)
+			{
+				this._logger.LogError("A SQL error occurred while searching for projects.", ex.Message);
+				throw;
+			}
+
+			return actions;
+		}
 	}
 }

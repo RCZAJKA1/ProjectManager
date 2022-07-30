@@ -108,5 +108,20 @@
 
 			return await this._actionRepository.GetActionPrioritiesAsync(cancellationToken).ConfigureAwait(false);
 		}
+
+		/// <inheritdoc/>
+		public async Task<IList<ProjectAction>> GetActionsAsync(ActionSearchOptions actionSearchOptions, CancellationToken cancellationToken = default)
+		{
+			this._logger.LogInformation("Entered method GetActionsAsync().");
+
+			if (actionSearchOptions == null)
+			{
+				throw new ArgumentNullException(nameof(actionSearchOptions));
+			}
+
+			// TODO: await this._actionSearchOptionsValidator.ValidateAsync(actionSearchOptions).ConfigureAwait(false);
+
+			return await this._actionRepository.SearchActionsAsync(actionSearchOptions, cancellationToken).ConfigureAwait(false);
+		}
 	}
 }

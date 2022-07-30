@@ -47,5 +47,13 @@
 		/// <param name="cancellationToken">The cancellation token.</param>
 		/// <returns>A dictionary of action priorities.</returns>
 		Task<IDictionary<int, string>> GetActionPrioritiesAsync(CancellationToken cancellationToken = default);
+
+		/// <summary>
+		///		Gets all actions using the specified search options.
+		/// </summary>
+		/// <param name="actionSearchOptions">The action search options.</param>
+		/// <param name="cancellationToken">The cancellation token.</param>
+		/// <returns>A list of <see cref="ProjectAction"/> that meet the specified search critieria.</returns>
+		Task<IList<ProjectAction>> GetActionsAsync(ActionSearchOptions actionSearchOptions, CancellationToken cancellationToken = default);
 	}
 }

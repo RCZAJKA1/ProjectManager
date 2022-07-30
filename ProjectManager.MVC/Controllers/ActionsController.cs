@@ -95,7 +95,7 @@
 
 			if (!this.ModelState.IsValid)
 			{
-				this._logger.LogInformation("The model state is invalid. Redirecting back to Actions.");
+				this._logger.LogError("The model state is invalid. Redirecting back to Actions.");
 
 				return this.RedirectToAction("Actions");
 			}
@@ -106,7 +106,56 @@
 
 			this.ViewBag.Success = $"Added action {projectAction.Description}";
 
-			return this.RedirectToAction("Action");
+			return this.RedirectToAction("Actions");
+		}
+
+		/// <summary>
+		///		Searches for actions using the specified criteria.
+		/// </summary>
+		/// <param name="projectAction">The project action search criteria.</param>
+		/// <returns>An <see cref="IActionResult"/> representing the actions page.</returns>
+		/// <exception cref="ArgumentNullException"></exception>
+		public async Task<IActionResult> SearchActions(ProjectAction projectAction)
+		{
+			this._logger.LogInformation("Entered POST method SearchActions().");
+
+			if (projectAction == null)
+			{
+				throw new ArgumentNullException(nameof(projectAction));
+			}
+
+			if (!this.ModelState.IsValid)
+			{
+				this._logger.LogError("The model state is invalid. Redirecting back to Actions.");
+
+				return this.RedirectToAction("Actions");
+			}
+
+			ActionSearchOptions searchOptions = new ActionSearchOptions
+			{
+				Description = projectAction.Description,
+				DateClosed = projectAction.DateClosed,
+				DateDue = projectAction.DateDue,
+				DateOpened = projectAction.DateOpened,
+				OwnerId = projectAction.OwnerId,
+				Priority = projectAction.Priority,
+				ProjectId = projectAction.ProjectId,
+				Resolution = projectAction.Resolution,
+				Status = projectAction.Status
+			};
+
+			// TODO: Fix reloading page
+			// TODO: Don't re-query all data
+
+			ActionViewModel actionViewModel = new ActionViewModel
+			{
+				Actions = await this._projectActionService.GetActionsAsync(searchOptions, cancellationToken: this._cancellationTokenSource.Token).ConfigureAwait(false),
+				Owners = await this._projectActionService.GetActiveActionOwnersAsync(this._cancellationTokenSource.Token).ConfigureAwait(false),
+				Statuses = await this._projectActionService.GetActionStatusesAsync(this._cancellationTokenSource.Token).ConfigureAwait(false),
+				Priorities = await this._projectActionService.GetActionPrioritiesAsync(this._cancellationTokenSource.Token).ConfigureAwait(false)
+			};
+
+			return this.RedirectToAction("Actions", "Actions", actionViewModel);
 		}
 	}
 }
