@@ -1,0 +1,40 @@
+﻿@using ProjectManager.Data.Models
+@model ProjectManager.MVC.Models.ActionViewModel
+
+@foreach (ProjectAction projectAction in Model.Actions) {
+<tr>
+    <td>
+        @Html.DisplayFor(modelItem => projectAction.Description)
+    </td>
+    <td>
+        <label>
+            @projectAction.OwnerLastName, @projectAction.OwnerFirstName
+        </label>
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => projectAction.Status)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => projectAction.Priority)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => projectAction.Resolution)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => projectAction.DateDue)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => projectAction.DateOpened)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => projectAction.DateClosed)
+    </td>
+    <td>
+        @using(Html.BeginForm("DeleteAction","Actions"))
+            {
+            <input type="hidden" name="ActionId" value="@projectAction.Id" />
+            <input type="submit" value="Delete" />
+            }
+    </td>
+</tr>
+}

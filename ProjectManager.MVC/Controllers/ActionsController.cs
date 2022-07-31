@@ -38,6 +38,26 @@
 		private readonly CancellationTokenSource _cancellationTokenSource;
 
 		/// <summary>
+		///		The actions.
+		/// </summary>
+		private IList<ProjectAction> actions;
+
+		/// <summary>
+		///		The action owners.
+		/// </summary>
+		private IList<ActionOwner> owners;
+
+		/// <summary>
+		///		The action statuses.
+		/// </summary>
+		private IDictionary<int, string> statuses;
+
+		/// <summary>
+		///		The action priorities.
+		/// </summary>
+		private IDictionary<int, string> priorities;
+
+		/// <summary>
 		///     Creates a new instance of the <see cref="ActionsController"/> class.
 		/// </summary>
 		/// <param name="logger">The logger.</param>
@@ -59,13 +79,31 @@
 		{
 			this._logger.LogInformation("Entered GET method Acions().");
 
-			ActionViewModel actionViewModel = new ActionViewModel
+			ActionViewModel actionViewModel = new();
+
+			if (this.actions == null)
 			{
-				Actions = await this._projectActionService.GetRecentActiveActionsAsync(cancellationToken: this._cancellationTokenSource.Token).ConfigureAwait(false),
-				Owners = await this._projectActionService.GetActiveActionOwnersAsync(this._cancellationTokenSource.Token).ConfigureAwait(false),
-				Statuses = await this._projectActionService.GetActionStatusesAsync(this._cancellationTokenSource.Token).ConfigureAwait(false),
-				Priorities = await this._projectActionService.GetActionPrioritiesAsync(this._cancellationTokenSource.Token).ConfigureAwait(false)
-			};
+				this.actions = await this._projectActionService.GetRecentActiveActionsAsync(cancellationToken: this._cancellationTokenSource.Token).ConfigureAwait(false);
+				actionViewModel.Actions = this.actions;
+			}
+
+			if (this.owners == null)
+			{
+				this.owners = await this._projectActionService.GetActiveActionOwnersAsync(this._cancellationTokenSource.Token).ConfigureAwait(false);
+				actionViewModel.Owners = this.owners;
+			}
+
+			if (this.statuses == null)
+			{
+				this.statuses = await this._projectActionService.GetActionStatusesAsync(this._cancellationTokenSource.Token).ConfigureAwait(false);
+				actionViewModel.Statuses = this.statuses;
+			}
+
+			if (this.priorities == null)
+			{
+				this.priorities = await this._projectActionService.GetActionPrioritiesAsync(this._cancellationTokenSource.Token).ConfigureAwait(false);
+				actionViewModel.Priorities = this.priorities;
+			}
 
 			// TODO: create new proc/query to get all active projects
 			IList<Project> activeProjects = await this._projectService.GetRecentActiveProjectsAsync(int.MaxValue, cancellationToken: this._cancellationTokenSource.Token).ConfigureAwait(false);
@@ -131,7 +169,7 @@
 				return this.RedirectToAction("Actions");
 			}
 
-			ActionSearchOptions searchOptions = new ActionSearchOptions
+			ActionSearchOptions searchOptions = new()
 			{
 				Description = projectAction.Description,
 				DateClosed = projectAction.DateClosed,
@@ -147,15 +185,19 @@
 			// TODO: Fix reloading page
 			// TODO: Don't re-query all data
 
-			ActionViewModel actionViewModel = new ActionViewModel
+			this.actions = await this._projectActionService.GetActionsAsync(searchOptions, cancellationToken: this._cancellationTokenSource.Token).ConfigureAwait(false);
+
+			ActionViewModel actionViewModel = new()
 			{
 				Actions = await this._projectActionService.GetActionsAsync(searchOptions, cancellationToken: this._cancellationTokenSource.Token).ConfigureAwait(false),
-				Owners = await this._projectActionService.GetActiveActionOwnersAsync(this._cancellationTokenSource.Token).ConfigureAwait(false),
-				Statuses = await this._projectActionService.GetActionStatusesAsync(this._cancellationTokenSource.Token).ConfigureAwait(false),
-				Priorities = await this._projectActionService.GetActionPrioritiesAsync(this._cancellationTokenSource.Token).ConfigureAwait(false)
 			};
 
-			return this.RedirectToAction("Actions", "Actions", actionViewModel);
+			//PartialActionsTableViewModel tableViewModel = new()
+			//{
+			//	Actions = this.actions
+			//};
+
+			return this.PartialView("_ActionsTableView", actionViewModel);
 		}
 	}
 }
