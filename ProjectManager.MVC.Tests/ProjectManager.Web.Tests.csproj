@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ProjectManager.MVC\ProjectManager.MVC.csproj" />
+    <ProjectReference Include="..\ProjectManager.MVC\ProjectManager.Web.csproj" />
   </ItemGroup>
 
   <ItemGroup>
