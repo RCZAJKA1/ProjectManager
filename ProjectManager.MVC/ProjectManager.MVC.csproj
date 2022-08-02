@@ -27,8 +27,4 @@
     </AssemblyAttribute>
   </ItemGroup>
 
-  <ItemGroup>
-    <None Include="Views\Shared\_ActionsTableView.cshtml" />
-  </ItemGroup>
-
 </Project>
