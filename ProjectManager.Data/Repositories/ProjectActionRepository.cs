@@ -385,7 +385,9 @@
 							Priority = (ActionPriority)reader.GetInt32(columns[6]),
 							ProjectId = reader.GetInt32(columns[7]),
 							Resolution = reader.IsDBNull(columns[8]) ? null : reader.GetString(columns[8]),
-							Status = (ActionStatus)reader.GetInt32(columns[6])
+							Status = (ActionStatus)reader.GetInt32(columns[9]),
+							OwnerFirstName = reader.GetString(columns[10]),
+							OwnerLastName = reader.GetString(columns[11])
 						};
 
 						actions.Add(action);

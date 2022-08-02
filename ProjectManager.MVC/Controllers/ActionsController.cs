@@ -38,26 +38,6 @@
 		private readonly CancellationTokenSource _cancellationTokenSource;
 
 		/// <summary>
-		///		The actions.
-		/// </summary>
-		private IList<ProjectAction> actions;
-
-		/// <summary>
-		///		The action owners.
-		/// </summary>
-		private IList<ActionOwner> owners;
-
-		/// <summary>
-		///		The action statuses.
-		/// </summary>
-		private IDictionary<int, string> statuses;
-
-		/// <summary>
-		///		The action priorities.
-		/// </summary>
-		private IDictionary<int, string> priorities;
-
-		/// <summary>
 		///     Creates a new instance of the <see cref="ActionsController"/> class.
 		/// </summary>
 		/// <param name="logger">The logger.</param>
@@ -79,31 +59,13 @@
 		{
 			this._logger.LogInformation("Entered GET method Acions().");
 
-			ActionViewModel actionViewModel = new();
-
-			if (this.actions == null)
+			ActionViewModel actionViewModel = new()
 			{
-				this.actions = await this._projectActionService.GetRecentActiveActionsAsync(cancellationToken: this._cancellationTokenSource.Token).ConfigureAwait(false);
-				actionViewModel.Actions = this.actions;
-			}
-
-			if (this.owners == null)
-			{
-				this.owners = await this._projectActionService.GetActiveActionOwnersAsync(this._cancellationTokenSource.Token).ConfigureAwait(false);
-				actionViewModel.Owners = this.owners;
-			}
-
-			if (this.statuses == null)
-			{
-				this.statuses = await this._projectActionService.GetActionStatusesAsync(this._cancellationTokenSource.Token).ConfigureAwait(false);
-				actionViewModel.Statuses = this.statuses;
-			}
-
-			if (this.priorities == null)
-			{
-				this.priorities = await this._projectActionService.GetActionPrioritiesAsync(this._cancellationTokenSource.Token).ConfigureAwait(false);
-				actionViewModel.Priorities = this.priorities;
-			}
+				Actions = await this._projectActionService.GetRecentActiveActionsAsync(cancellationToken: this._cancellationTokenSource.Token).ConfigureAwait(false),
+				Owners = await this._projectActionService.GetActiveActionOwnersAsync(this._cancellationTokenSource.Token).ConfigureAwait(false),
+				Statuses = await this._projectActionService.GetActionStatusesAsync(this._cancellationTokenSource.Token).ConfigureAwait(false),
+				Priorities = await this._projectActionService.GetActionPrioritiesAsync(this._cancellationTokenSource.Token).ConfigureAwait(false)
+			};
 
 			// TODO: create new proc/query to get all active projects
 			IList<Project> activeProjects = await this._projectService.GetRecentActiveProjectsAsync(int.MaxValue, cancellationToken: this._cancellationTokenSource.Token).ConfigureAwait(false);
@@ -182,22 +144,27 @@
 				Status = projectAction.Status
 			};
 
-			// TODO: Fix reloading page
+			// TODO: Don't reload entire page
 			// TODO: Don't re-query all data
-
-			this.actions = await this._projectActionService.GetActionsAsync(searchOptions, cancellationToken: this._cancellationTokenSource.Token).ConfigureAwait(false);
 
 			ActionViewModel actionViewModel = new()
 			{
 				Actions = await this._projectActionService.GetActionsAsync(searchOptions, cancellationToken: this._cancellationTokenSource.Token).ConfigureAwait(false),
+				Owners = await this._projectActionService.GetActiveActionOwnersAsync(this._cancellationTokenSource.Token).ConfigureAwait(false),
+				Statuses = await this._projectActionService.GetActionStatusesAsync(this._cancellationTokenSource.Token).ConfigureAwait(false),
+				Priorities = await this._projectActionService.GetActionPrioritiesAsync(this._cancellationTokenSource.Token).ConfigureAwait(false)
 			};
 
-			//PartialActionsTableViewModel tableViewModel = new()
-			//{
-			//	Actions = this.actions
-			//};
+			// TODO: create new proc/query to get all active projects
+			IList<Project> activeProjects = await this._projectService.GetRecentActiveProjectsAsync(int.MaxValue, cancellationToken: this._cancellationTokenSource.Token).ConfigureAwait(false);
+			IDictionary<int, string> projects = new Dictionary<int, string>(activeProjects.Count);
+			foreach (Project p in activeProjects)
+			{
+				projects.Add(p.Id, p.Name);
+			}
+			actionViewModel.Projects = projects;
 
-			return this.PartialView("_ActionsTableView", actionViewModel);
+			return this.View("Actions", actionViewModel);
 		}
 	}
 }
