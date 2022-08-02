@@ -158,7 +158,7 @@
 			}
 			catch (SqlException ex)
 			{
-				this._logger.LogError("A SQL error occurred while getting projects for user.", ex.Message);
+				this._logger.LogError("A SQL error occurred while getting actions for user.", ex.Message);
 				throw;
 			}
 
@@ -215,7 +215,7 @@
 			}
 			catch (SqlException ex)
 			{
-				this._logger.LogError("A SQL error occurred while getting projects for user.", ex.Message);
+				this._logger.LogError("A SQL error occurred while getting actions for user.", ex.Message);
 				throw;
 			}
 
@@ -267,7 +267,7 @@
 			}
 			catch (SqlException ex)
 			{
-				this._logger.LogError("A SQL error occurred while getting projects for user.", ex.Message);
+				this._logger.LogError("A SQL error occurred while getting actions for user.", ex.Message);
 				throw;
 			}
 
@@ -319,7 +319,7 @@
 			}
 			catch (SqlException ex)
 			{
-				this._logger.LogError("A SQL error occurred while getting projects for user.", ex.Message);
+				this._logger.LogError("A SQL error occurred while getting actions for user.", ex.Message);
 				throw;
 			}
 
@@ -401,11 +401,54 @@
 			}
 			catch (SqlException ex)
 			{
-				this._logger.LogError("A SQL error occurred while searching for projects.", ex.Message);
+				this._logger.LogError("A SQL error occurred while searching for actions.", ex.Message);
 				throw;
 			}
 
 			return actions;
+		}
+
+		/// <inheritdoc/>
+		public async Task DeleteActionAsync(int actionId, CancellationToken cancellationToken = default)
+		{
+			this._logger.LogInformation("Entered method ProjectActionRepository.DeleteActionAsync().");
+
+			if (actionId < 1)
+			{
+				throw new ArgumentOutOfRangeException(nameof(actionId));
+			}
+
+			cancellationToken.ThrowIfCancellationRequested();
+
+			try
+			{
+				using SqlConnection connection = new SqlConnection(this._connectionString);
+				using SqlCommand command = new SqlCommand
+				{
+					Connection = connection,
+					CommandType = CommandType.StoredProcedure,
+					CommandText = StoredProcedures.DeleteAction
+				};
+
+				SqlParameter[] parameters = new SqlParameter[]
+				{
+					new SqlParameter("@actionId", actionId)
+				};
+
+				command.Parameters.AddRange(parameters);
+
+				if (command.Connection.State != ConnectionState.Open)
+				{
+					await connection.OpenAsync().ConfigureAwait(false);
+				}
+
+				await command.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false);
+			}
+			catch (SqlException ex)
+			{
+				this._logger.LogError("A SQL error occurred while deleting the action.", ex.Message);
+				throw;
+			}
 		}
 	}
 }

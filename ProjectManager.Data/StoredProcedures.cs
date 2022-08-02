@@ -62,5 +62,10 @@
 		///     [dbo].[usp_GetActions]
 		/// </summary>
 		public static string GetActions = "[dbo].[usp_GetActions]";
+
+		/// <summary>
+		///     [dbo].[usp_DeleteAction]
+		/// </summary>
+		public static string DeleteAction = "[dbo].[usp_DeleteAction]";
 	}
 }

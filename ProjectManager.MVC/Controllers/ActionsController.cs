@@ -12,6 +12,8 @@
 	using ProjectManager.Data.Models;
 	using ProjectManager.MVC.Models;
 
+	using Project = Data.Models.Project;
+
 	/// <summary>
 	///     Handles requests for the projects page.
 	/// </summary>
@@ -165,6 +167,26 @@
 			actionViewModel.Projects = projects;
 
 			return this.View("Actions", actionViewModel);
+		}
+
+		/// <summary>
+		///		Deletes the action with the specified identifier.
+		/// </summary>
+		/// <param name="actionId">The action identifier.</param>
+		/// <returns>An <see cref="IActionResult"/> representing the actions page.</returns>
+		[HttpPost]
+		public async Task<IActionResult> DeleteAction(int actionId)
+		{
+			this._logger.LogInformation("Entered method DeleteAction().");
+
+			if (actionId < 1)
+			{
+				throw new ArgumentOutOfRangeException(nameof(actionId));
+			}
+
+			await this._projectActionService.DeleteActionAsync(actionId, this._cancellationTokenSource.Token).ConfigureAwait(false);
+
+			return this.RedirectToAction("Actions");
 		}
 	}
 }

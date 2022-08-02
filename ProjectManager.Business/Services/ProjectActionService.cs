@@ -123,5 +123,18 @@
 
 			return await this._actionRepository.SearchActionsAsync(actionSearchOptions, cancellationToken).ConfigureAwait(false);
 		}
+
+		/// <inheritdoc/>
+		public async Task DeleteActionAsync(int actionId, CancellationToken cancellationToken = default)
+		{
+			this._logger.LogInformation("Entered method DeleteActionAsync().");
+
+			if (actionId < 1)
+			{
+				throw new ArgumentOutOfRangeException(nameof(actionId));
+			}
+
+			await this._actionRepository.DeleteActionAsync(actionId, cancellationToken).ConfigureAwait(false);
+		}
 	}
 }

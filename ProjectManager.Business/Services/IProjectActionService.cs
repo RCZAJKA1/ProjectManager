@@ -55,5 +55,13 @@
 		/// <param name="cancellationToken">The cancellation token.</param>
 		/// <returns>A list of <see cref="ProjectAction"/> that meet the specified search critieria.</returns>
 		Task<IList<ProjectAction>> GetActionsAsync(ActionSearchOptions actionSearchOptions, CancellationToken cancellationToken = default);
+
+		/// <summary>
+		///		Deletes the action with the specified identifier.
+		/// </summary>
+		/// <param name="actionId">The action identifier.</param>
+		/// <param name="cancellationToken">The cancellation token.</param>
+		/// <returns>The <see cref="Task"/> that completed deleting the action.</returns>
+		Task DeleteActionAsync(int actionId, CancellationToken cancellationToken = default);
 	}
 }
